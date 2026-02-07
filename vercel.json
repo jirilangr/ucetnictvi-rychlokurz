@@ -1,4 +1,12 @@
 {
   "version": 2,
-  "name": "ucetnictvi-rychlokurz"
+  "name": "ucetnictvi-rychlokurz",
+  "headers": [
+    {
+      "source": "/(.*)\\.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ]
 }
