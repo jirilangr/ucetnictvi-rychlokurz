@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Účetnictví Rychlokurz - pro MILÁČKA 🧡</title>
+<style>
+/* ===================== RESET & BASE ===================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f6f3;--bg2:#fff;--bg3:#f0ede8;--text:#2d2a26;--text2:#6b6560;
+  --primary:#6c5ce7;--primary-light:#a29bfe;--primary-bg:#ede9fe;
+  --accent:#00b894;--accent-bg:#d5f5ec;
+  --red:#e74c3c;--red-bg:#fde8e8;--red-light:#f5a5a5;
+  --blue:#3498db;--blue-bg:#e0f0ff;--blue-light:#85c1e9;
+  --green:#27ae60;--green-bg:#e0f8ec;--green-light:#82e0aa;
+  --orange:#f39c12;--orange-bg:#fef3d5;
+  --purple:#8e44ad;--purple-bg:#f0e0f8;
+  --shadow:0 2px 12px rgba(0,0,0,.08);--shadow-lg:0 8px 32px rgba(0,0,0,.12);
+  --radius:12px;--radius-sm:8px;--radius-xs:6px;
+  --font:'Segoe UI',system-ui,-apple-system,sans-serif;
+  --transition:all .3s ease;
+}
+[data-theme="dark"]{
+  --bg:#1a1a2e;--bg2:#16213e;--bg3:#0f3460;--text:#e8e8e8;--text2:#a0a0b0;
+  --primary:#a29bfe;--primary-light:#6c5ce7;--primary-bg:#2d2560;
+  --accent:#55efc4;--accent-bg:#1a4a3a;
+  --red:#ff6b6b;--red-bg:#4a2020;--red-light:#c0392b;
+  --blue:#74b9ff;--blue-bg:#1a3a5c;--blue-light:#2980b9;
+  --green:#55efc4;--green-bg:#1a4a3a;--green-light:#1abc9c;
+  --orange:#ffeaa7;--orange-bg:#4a3a1a;
+  --purple:#dda0dd;--purple-bg:#3a1a4a;
+  --shadow:0 2px 12px rgba(0,0,0,.3);--shadow-lg:0 8px 32px rgba(0,0,0,.4);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh;transition:var(--transition)}
+
+/* ===================== LAYOUT ===================== */
+.app{max-width:900px;margin:0 auto;padding:0 20px 60px}
+header{background:var(--bg2);border-bottom:2px solid var(--primary);padding:16px 0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header-inner{max-width:900px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-size:1.4rem;font-weight:800;color:var(--primary);display:flex;align-items:center;gap:8px}
+.logo span{font-size:1.6rem}
+.header-controls{display:flex;align-items:center;gap:10px}
+
+/* Progress bar */
+.progress-wrap{width:100%;max-width:900px;margin:0 auto;padding:8px 20px}
+.progress-bar{height:8px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:99px;transition:width .5s ease;width:0}
+.progress-text{font-size:.8rem;color:var(--text2);text-align:center;margin-top:4px}
+
+/* Theme toggle */
+.theme-btn{background:var(--bg3);border:none;cursor:pointer;font-size:1.3rem;padding:6px 10px;border-radius:var(--radius-xs);transition:var(--transition)}
+.theme-btn:hover{background:var(--primary-bg)}
+
+/* Print button */
+.print-btn{background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:.85rem;padding:8px 14px;border-radius:var(--radius-xs);font-weight:600;transition:var(--transition)}
+.print-btn:hover{opacity:.85;transform:translateY(-1px)}
+
+/* ===================== NAVIGATION ===================== */
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin:24px 0 16px;justify-content:center}
+.nav-btn{padding:8px 14px;border:2px solid var(--bg3);background:var(--bg2);border-radius:var(--radius-sm);cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text2);transition:var(--transition);position:relative;white-space:nowrap}
+.nav-btn:hover:not(.locked){border-color:var(--primary);color:var(--primary)}
+.nav-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.nav-btn.completed{border-color:var(--accent);color:var(--accent)}
+.nav-btn.completed::after{content:'✓';position:absolute;top:-6px;right:-6px;background:var(--accent);color:#fff;width:18px;height:18px;border-radius:50%;font-size:.65rem;display:flex;align-items:center;justify-content:center}
+.nav-btn.locked{opacity:.45;cursor:not-allowed}
+.nav-btn.bonus{border-color:var(--orange);color:var(--orange)}
+.nav-btn.bonus:hover:not(.locked){border-color:var(--orange);background:var(--orange-bg)}
+.nav-btn.bonus.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+.nav-btn.bonus.completed{border-color:var(--accent);color:var(--accent)}
+.bonus-badge{display:inline-block;background:var(--orange);color:#fff;font-size:.7rem;padding:2px 6px;border-radius:99px;margin-left:4px;vertical-align:middle}
+
+/* ===================== LESSON CONTENT ===================== */
+.lesson{background:var(--bg2);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);margin-bottom:24px;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.lesson h2{font-size:1.6rem;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.lesson h2 .emoji{font-size:1.8rem}
+.lesson h3{font-size:1.2rem;color:var(--text);margin:20px 0 10px;border-bottom:2px solid var(--primary-bg);padding-bottom:6px}
+.lesson p{margin-bottom:14px;color:var(--text)}
+.lesson ul,.lesson ol{margin:10px 0 16px 20px}
+.lesson li{margin-bottom:6px}
+.highlight{background:var(--primary-bg);border-left:4px solid var(--primary);padding:14px 18px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:16px 0;font-weight:500}
+.tip{background:var(--accent-bg);border-left:4px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:16px 0}
+.warning{background:var(--orange-bg);border-left:4px solid var(--orange);padding:14px 18px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:16px 0}
+
+/* Analogy box */
+.analogy{background:linear-gradient(135deg,var(--primary-bg),var(--accent-bg));padding:20px;border-radius:var(--radius);margin:16px 0;border:2px dashed var(--primary-light)}
+.analogy-title{font-weight:700;color:var(--primary);margin-bottom:6px;font-size:1rem}
+
+/* ===================== T-ACCOUNT ===================== */
+.t-account{border:2px solid var(--text);border-radius:var(--radius-xs);margin:16px auto;max-width:400px;overflow:hidden;background:var(--bg2)}
+.t-account-title{text-align:center;font-weight:700;padding:8px;background:var(--primary-bg);color:var(--primary);border-bottom:2px solid var(--text);font-size:.95rem}
+.t-account-body{display:grid;grid-template-columns:1fr 1fr;min-height:80px}
+.t-account-md{border-right:2px solid var(--text);padding:10px;font-size:.9rem}
+.t-account-d{padding:10px;font-size:.9rem}
+.t-account-md-header,.t-account-d-header{text-align:center;font-weight:700;font-size:.85rem;color:var(--text2);padding-bottom:6px;border-bottom:1px dashed var(--text2);margin-bottom:8px}
+.t-entry{padding:3px 0;display:flex;justify-content:space-between;gap:4px}
+.t-entry .label{font-size:.82rem}
+.t-entry .amount{font-weight:600;font-size:.85rem}
+
+/* ===================== EQUATION ===================== */
+.equation{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0;flex-wrap:wrap;font-size:1.3rem;font-weight:800}
+.eq-box{padding:12px 24px;border-radius:var(--radius-sm);text-align:center;min-width:120px}
+.eq-aktiva{background:var(--blue-bg);color:var(--blue);border:2px solid var(--blue)}
+.eq-pasiva{background:var(--green-bg);color:var(--green);border:2px solid var(--green)}
+.eq-naklady{background:var(--red-bg);color:var(--red);border:2px solid var(--red)}
+.eq-vynosy{background:var(--purple-bg);color:var(--purple);border:2px solid var(--purple)}
+.eq-sign{font-size:1.5rem;color:var(--text2)}
+
+/* ===================== ACCOUNT TABLE ===================== */
+.acc-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.88rem}
+.acc-table th{background:var(--primary-bg);color:var(--primary);padding:10px 12px;text-align:left;font-weight:700}
+.acc-table td{padding:8px 12px;border-bottom:1px solid var(--bg3)}
+.acc-table tr:hover td{background:var(--bg3)}
+.acc-table .num{font-weight:700;color:var(--primary);font-family:monospace;font-size:1rem}
+
+/* ===================== ACCOUNT CLASS CARDS ===================== */
+.class-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:16px 0}
+.class-card{padding:14px;border-radius:var(--radius-sm);border:2px solid;text-align:center;transition:var(--transition);cursor:default}
+.class-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.class-card .num{font-size:1.4rem;font-weight:800;display:block}
+.class-card .name{font-size:.85rem;font-weight:600}
+
+/* ===================== EXERCISES ===================== */
+.exercise{background:var(--bg3);border-radius:var(--radius);padding:24px;margin:24px 0}
+.exercise-title{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+
+/* Quiz */
+.quiz-q{background:var(--bg2);border-radius:var(--radius-sm);padding:18px;margin:12px 0}
+.quiz-q p{font-weight:600;margin-bottom:10px}
+.quiz-options{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:10px 16px;border:2px solid var(--bg3);border-radius:var(--radius-xs);cursor:pointer;transition:var(--transition);font-size:.92rem;background:var(--bg2)}
+.quiz-opt:hover{border-color:var(--primary);background:var(--primary-bg)}
+.quiz-opt.selected{border-color:var(--primary);background:var(--primary-bg);font-weight:600}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-bg);font-weight:600}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-bg)}
+.quiz-explanation{margin-top:8px;font-size:.88rem;color:var(--text2);padding:8px 12px;border-radius:var(--radius-xs);display:none}
+.quiz-explanation.show{display:block;background:var(--accent-bg)}
+
+/* Drag and drop */
+.dnd-zone{min-height:100px;border:2px dashed var(--text2);border-radius:var(--radius-sm);padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;transition:var(--transition)}
+.dnd-zone.over{border-color:var(--primary);background:var(--primary-bg)}
+.dnd-item{padding:8px 16px;border-radius:var(--radius-xs);cursor:grab;font-size:.9rem;font-weight:600;transition:var(--transition);user-select:none;border:2px solid transparent}
+.dnd-item:active{cursor:grabbing;opacity:.7}
+.dnd-item.correct-place{border-color:var(--green);box-shadow:0 0 8px rgba(39,174,96,.3)}
+.dnd-item.wrong-place{border-color:var(--red);box-shadow:0 0 8px rgba(231,76,60,.3);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.dnd-source{background:var(--bg2);border:2px dashed var(--primary-light);border-radius:var(--radius-sm);padding:12px;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:60px}
+.dnd-targets{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dnd-target-label{font-weight:700;text-align:center;margin-bottom:6px;font-size:.95rem}
+
+/* Matching */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.match-item{padding:10px;border-radius:var(--radius-xs);cursor:pointer;text-align:center;font-weight:600;transition:var(--transition);border:2px solid var(--bg3);font-size:.88rem}
+.match-item:hover{border-color:var(--primary)}
+.match-item.selected{border-color:var(--primary);background:var(--primary-bg);box-shadow:0 0 8px rgba(108,92,231,.2)}
+.match-item.matched{border-color:var(--green);background:var(--green-bg);cursor:default;opacity:.7}
+.match-item.wrong-match{border-color:var(--red);background:var(--red-bg);animation:shake .4s}
+
+/* Buttons */
+.btn{padding:10px 24px;border-radius:var(--radius-xs);cursor:pointer;font-size:.95rem;font-weight:600;border:none;transition:var(--transition);display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-group{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+
+/* Score */
+.score-box{text-align:center;padding:24px;background:linear-gradient(135deg,var(--primary-bg),var(--accent-bg));border-radius:var(--radius);margin:16px 0}
+.score-big{font-size:3rem;font-weight:800;color:var(--primary)}
+.score-label{font-size:1rem;color:var(--text2)}
+.score-msg{font-size:1.1rem;margin-top:8px;font-weight:600}
+
+/* Feedback inline */
+.feedback{padding:10px 16px;border-radius:var(--radius-xs);margin-top:10px;font-weight:600;font-size:.9rem;display:none}
+.feedback.show{display:block}
+.feedback.success{background:var(--green-bg);color:var(--green)}
+.feedback.error{background:var(--red-bg);color:var(--red)}
+
+/* Stars */
+.stars{font-size:1.5rem;letter-spacing:4px;margin:8px 0}
+.star-filled{color:var(--orange)}
+.star-empty{color:var(--bg3)}
+
+/* ===================== CHEATSHEET (Print) ===================== */
+.cheatsheet{display:none}
+
+/* ===================== WELCOME ===================== */
+.welcome{text-align:center;padding:40px 20px}
+.welcome h1{font-size:2rem;color:var(--primary);margin-bottom:8px}
+.welcome .subtitle{font-size:1.1rem;color:var(--text2);margin-bottom:24px}
+.welcome .big-emoji{font-size:4rem;margin-bottom:16px;display:block}
+
+/* ===================== FOOTER NAV ===================== */
+.lesson-footer{display:flex;justify-content:space-between;margin-top:28px;padding-top:20px;border-top:2px solid var(--bg3);flex-wrap:wrap;gap:10px}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:600px){
+  .lesson{padding:18px}
+  .equation{font-size:1rem}
+  .eq-box{padding:8px 14px;min-width:90px;font-size:.9rem}
+  .dnd-targets{grid-template-columns:1fr}
+  .header-inner{justify-content:center}
+  .nav-btn{font-size:.75rem;padding:6px 10px}
+  .t-account{max-width:100%}
+  .class-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .match-grid{grid-template-columns:1fr}
+}
+
+/* ===================== ANIMATIONS ===================== */
+.pop{animation:pop .3s ease}
+@keyframes pop{0%{transform:scale(.9)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.glow{animation:glow 1s ease infinite alternate}
+@keyframes glow{from{box-shadow:0 0 5px var(--primary)}to{box-shadow:0 0 20px var(--primary)}}
+.bounce{animation:bounce .6s ease}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.confetti-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+.confetti{position:absolute;width:10px;height:10px;border-radius:2px;animation:confettiFall 2.5s ease-out forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* ===================== INTERACTIVE T-ACCOUNT EXERCISE ===================== */
+.t-click-area{cursor:pointer;transition:var(--transition);min-height:40px;display:flex;align-items:center;justify-content:center;font-weight:600;border-radius:var(--radius-xs)}
+.t-click-area:hover{background:var(--primary-bg)}
+.t-click-area.flash-green{background:var(--green-bg);color:var(--green)}
+.t-click-area.flash-red{background:var(--red-bg);color:var(--red)}
+
+/* ===================== DOCUMENT EXERCISE ===================== */
+.doc-card{background:var(--bg2);border:2px solid var(--bg3);border-radius:var(--radius-sm);padding:18px;margin:12px 0;font-size:.9rem;position:relative}
+.doc-card .doc-type{position:absolute;top:-10px;left:14px;background:var(--primary);color:#fff;padding:2px 10px;border-radius:99px;font-size:.75rem;font-weight:700}
+.doc-card .doc-line{padding:4px 0;display:flex;justify-content:space-between;cursor:pointer;border-radius:var(--radius-xs);padding:4px 6px;transition:var(--transition)}
+.doc-card .doc-line:hover{background:var(--bg3)}
+.doc-card .doc-line.found{background:var(--green-bg);color:var(--green);cursor:default}
+
+/* ===================== DPH CALC ===================== */
+.dph-calc{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.dph-calc label{display:block;font-weight:600;margin-bottom:4px;font-size:.9rem}
+.dph-calc input,.dph-calc select{width:100%;padding:10px;border:2px solid var(--bg3);border-radius:var(--radius-xs);font-size:1rem;background:var(--bg2);color:var(--text);font-family:var(--font)}
+.dph-calc input:focus,.dph-calc select:focus{outline:none;border-color:var(--primary)}
+.dph-result{background:var(--primary-bg);padding:16px;border-radius:var(--radius-sm);text-align:center;font-size:1.1rem;margin-top:12px}
+
+/* ===================== FINAL TEST ===================== */
+.test-question{background:var(--bg2);border-radius:var(--radius-sm);padding:18px;margin:14px 0;border-left:4px solid var(--primary)}
+.test-question .q-num{font-size:.8rem;color:var(--text2);font-weight:700;margin-bottom:4px}
+.test-question p{font-weight:600;margin-bottom:10px}
+.test-summary{background:linear-gradient(135deg,var(--primary-bg),var(--accent-bg));border-radius:var(--radius);padding:30px;text-align:center;margin:20px 0}
+.test-summary .big-score{font-size:4rem;font-weight:800}
+.test-summary .grade{font-size:1.3rem;font-weight:700;margin:8px 0}
+.test-result-item{display:flex;align-items:flex-start;gap:10px;padding:10px;margin:6px 0;border-radius:var(--radius-xs);font-size:.9rem}
+.test-result-item.ok{background:var(--green-bg)}
+.test-result-item.nok{background:var(--red-bg)}
+
+/* ===================== PRINT ===================== */
+@media print{
+  body{background:#fff;color:#000;font-size:11pt}
+  header,.nav,.exercise,.btn-group,.lesson-footer,.header-controls,.progress-wrap,.theme-btn,.print-btn,.no-print{display:none!important}
+  .lesson{box-shadow:none;border:1px solid #ccc;break-inside:avoid;padding:16px}
+  .cheatsheet{display:block!important;break-before:page}
+  .cheatsheet h2{font-size:16pt;margin-bottom:12px}
+  .cheatsheet table{width:100%;border-collapse:collapse;font-size:9pt}
+  .cheatsheet th,.cheatsheet td{border:1px solid #999;padding:4px 8px}
+  .cheatsheet th{background:#eee}
+  .t-account{border:1px solid #000;max-width:300px}
+  .t-account-body{border-top:1px solid #000}
+  .t-account-md{border-right:1px solid #000}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="logo"><span>🧡</span> Účetnictví Rychlokurz - pro MILÁČKA</div>
+    <div class="header-controls">
+      <button class="print-btn no-print" onclick="window.print()" title="Vytiskni tahák">🖨️ Tahák</button>
+      <button class="theme-btn no-print" onclick="toggleTheme()" title="Tmavý / světlý režim">🌙</button>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0 / 22 lekcí</div>
+  </div>
+</header>
+
+<div class="app">
+  <nav class="nav no-print" id="lessonNav"></nav>
+  <main id="mainContent">
+    <!-- Fallback při vypnutém JS nebo chybě – bez JS se aspoň zobrazí úvod -->
+    <div class="welcome" id="mainContentFallback">
+      <span class="big-emoji">🏨📚</span>
+      <h1>Účetnictví Rychlokurz - pro MILÁČKA 🧡</h1>
+      <p class="subtitle">Pro hotelovou školu – od naprostých základů k jistotě u zkoušky</p>
+      <p style="margin-top:1rem"><a href="ucetnictvi-rychlokurz.html" class="btn btn-primary" style="display:inline-block;padding:12px 24px;text-decoration:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600">Obnovit stránku / Začít</a></p>
+      <p id="mainContentError" style="display:none;margin-top:1rem;padding:12px;background:var(--red-bg);color:var(--red);border-radius:8px;font-size:.9rem"></p>
+    </div>
+  </main>
+</div>
+
+<!-- Tahák k tisku -->
+<div class="cheatsheet">
+  <h2>TAHÁK – Podvojné účetnictví (shrnutí)</h2>
+
+  <h3>Bilanční rovnice</h3>
+  <p><strong>AKTIVA = PASIVA</strong> (vždy se musí rovnat!)</p>
+  <p>AKTIVA = co firma MÁ (majetek) &nbsp;|&nbsp; PASIVA = ODKUD to má (zdroje)</p>
+
+  <h3>T-účet – pravidla stran</h3>
+  <table>
+    <tr><th>Typ účtu</th><th>MD (levá) = přírůstek</th><th>D (pravá) = přírůstek</th></tr>
+    <tr><td>Aktivní (majetek)</td><td><strong>ANO – přírůstek</strong></td><td>úbytek</td></tr>
+    <tr><td>Pasivní (zdroje)</td><td>úbytek</td><td><strong>ANO – přírůstek</strong></td></tr>
+    <tr><td>Nákladový (5xx)</td><td><strong>ANO – přírůstek</strong></td><td>snížení / oprava</td></tr>
+    <tr><td>Výnosový (6xx)</td><td>snížení / oprava</td><td><strong>ANO – přírůstek</strong></td></tr>
+  </table>
+
+  <h3>Nejdůležitější účty</h3>
+  <table>
+    <tr><th>Číslo</th><th>Název</th><th>Typ</th></tr>
+    <tr><td>211</td><td>Pokladna</td><td>Aktivní</td></tr>
+    <tr><td>221</td><td>Peněžní prostředky na účtech (Banka)</td><td>Aktivní</td></tr>
+    <tr><td>261</td><td>Peníze na cestě (přechodný – výběr/odvod banka↔pokladna)</td><td>Aktivní</td></tr>
+    <tr><td>111</td><td>Pořízení materiálu (přechodný)</td><td>Aktivní</td></tr>
+    <tr><td>112</td><td>Materiál na skladě</td><td>Aktivní</td></tr>
+    <tr><td>213</td><td>Ceniny (známky, stravenky, kolky)</td><td>Aktivní</td></tr>
+    <tr><td>335</td><td>Pohledávky za zaměstnanci (zálohy, předpisy)</td><td>Aktivní</td></tr>
+    <tr><td>569</td><td>Manka a škody (schodky)</td><td>Nákladový</td></tr>
+    <tr><td>668</td><td>Ostatní operativní náklady (předpis schodku)</td><td>Nákladový</td></tr>
+    <tr><td>132</td><td>Zboží na skladě</td><td>Aktivní</td></tr>
+    <tr><td>022</td><td>Hmotné movité věci (vybavení)</td><td>Aktivní</td></tr>
+    <tr><td>311</td><td>Odběratelé (pohledávky)</td><td>Aktivní</td></tr>
+    <tr><td>321</td><td>Dodavatelé (závazky)</td><td>Pasivní</td></tr>
+    <tr><td>331</td><td>Zaměstnanci</td><td>Pasivní</td></tr>
+    <tr><td>343</td><td>DPH</td><td>Aktivní/Pasivní</td></tr>
+    <tr><td>411</td><td>Základní kapitál</td><td>Pasivní</td></tr>
+    <tr><td>461</td><td>Bankovní úvěry</td><td>Pasivní</td></tr>
+    <tr><td>501</td><td>Spotřeba materiálu</td><td>Nákladový</td></tr>
+    <tr><td>502</td><td>Spotřeba energie</td><td>Nákladový</td></tr>
+    <tr><td>518</td><td>Ostatní služby</td><td>Nákladový</td></tr>
+    <tr><td>521</td><td>Mzdové náklady</td><td>Nákladový</td></tr>
+    <tr><td>524</td><td>Zákonné sociální pojištění</td><td>Nákladový</td></tr>
+    <tr><td>551</td><td>Odpisy</td><td>Nákladový</td></tr>
+    <tr><td>602</td><td>Tržby za služby</td><td>Výnosový</td></tr>
+    <tr><td>604</td><td>Tržby za zboží</td><td>Výnosový</td></tr>
+  </table>
+
+  <h3>Typické účetní případy hotelu</h3>
+  <table>
+    <tr><th>Operace</th><th>MD</th><th>D</th></tr>
+    <tr><td>Host platí hotově za ubytování</td><td>211</td><td>602</td></tr>
+    <tr><td>Tržba kartou za ubytování</td><td>221</td><td>602</td></tr>
+    <tr><td>Nákup potravin za hotové</td><td>501</td><td>211</td></tr>
+    <tr><td>Přijatá faktura za energie</td><td>502</td><td>321</td></tr>
+    <tr><td>Úhrada faktury z banky</td><td>321</td><td>221</td></tr>
+    <tr><td>Předpis mezd zaměstnancům</td><td>521</td><td>331</td></tr>
+    <tr><td>Výplata mezd z banky</td><td>331</td><td>221</td></tr>
+    <tr><td>Nákup zboží do minibaru na FP</td><td>132</td><td>321</td></tr>
+    <tr><td>Výběr z banky do pokladny (1. PPD)</td><td>261</td><td>221</td></tr>
+    <tr><td>Výběr z banky do pokladny (2. VBU)</td><td>211</td><td>261</td></tr>
+    <tr><td>Odvod z pokladny na účet (1. VPD)</td><td>261</td><td>211</td></tr>
+    <tr><td>Odvod z pokladny na účet (2. VBU)</td><td>221</td><td>261</td></tr>
+    <tr><td>Schodek na pokladně</td><td>569</td><td>211</td></tr>
+    <tr><td>Předpis schodku k úhradě</td><td>668</td><td>335</td></tr>
+    <tr><td>Úhrada schodku hotovostí / srážkou</td><td>211 nebo 331</td><td>335</td></tr>
+    <tr><td>Záloha zaměstnanci (VPD)</td><td>335</td><td>211</td></tr>
+    <tr><td>Vyúčtování zálohy (náklad)</td><td>512 nebo 504</td><td>335</td></tr>
+    <tr><td>Přijetí bankovního úvěru</td><td>221</td><td>461</td></tr>
+  </table>
+
+  <h3>DPH</h3>
+  <p>Základní sazba: 21% &nbsp;|&nbsp; Snížená sazba: 12% (ubytování, stravování)</p>
+  <p>DPH na vstupu (nákup): 343 MD &nbsp;|&nbsp; DPH na výstupu (prodej): 343 D</p>
+</div>
+
+<script>
+// ===================== APP STATE =====================
+const APP = {
+  currentLesson: 0,
+  completed: new Set(),
+  testAnswers: {},
+  init() {
+    if (typeof LESSONS === 'undefined' || !LESSONS.length) {
+      var err = document.getElementById('mainContentError');
+      if (err) { err.textContent = 'Chyba: lekce nejsou načteny.'; err.style.display = 'block'; }
+      return;
+    }
+    const saved = localStorage.getItem('ucetnictvi_progress');
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        if (d.completed) this.completed = new Set(d.completed);
+        if (typeof d.currentLesson === 'number') this.currentLesson = d.currentLesson;
+      } catch(e) {}
+    }
+    const theme = localStorage.getItem('ucetnictvi_theme') || 'light';
+    if (theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    this.renderNav();
+    this.showLesson(this.currentLesson);
+  },
+  save() {
+    localStorage.setItem('ucetnictvi_progress', JSON.stringify({
+      completed: [...this.completed],
+      currentLesson: this.currentLesson
+    }));
+  },
+  completeLesson(n) {
+    this.completed.add(n);
+    this.save();
+    this.renderNav();
+    this.updateProgress();
+    showConfetti();
+  },
+  isUnlocked(n) {
+    if (n === 0) return true;
+    if (n >= 15) return this.completed.has(14);
+    return this.completed.has(n - 1) || this.completed.has(n);
+  },
+  renderNav() {
+    const nav = document.getElementById('lessonNav');
+    nav.innerHTML = LESSONS.map((l, i) => {
+      const done = this.completed.has(i);
+      const active = this.currentLesson === i;
+      const unlocked = this.isUnlocked(i);
+      const isBonus = i >= 15;
+      let cls = 'nav-btn' + (isBonus ? ' bonus' : '');
+      if (active) cls += ' active';
+      else if (done) cls += ' completed';
+      else if (!unlocked) cls += ' locked';
+      const label = i === 0 ? '🏠' : isBonus ? `B${i - 14}` : (i + '.');
+      const short = l.short + (isBonus ? ' <span class="bonus-badge">bonus</span>' : '');
+      return `<button class="${cls}" onclick="goToLesson(${i})" ${!unlocked && !done ? 'disabled' : ''}>${label} ${short}</button>`;
+    }).join('');
+    this.updateProgress();
+  },
+  updateProgress() {
+    const done = this.completed.size;
+    const total = Math.max(0, LESSONS.length - 1); // bez úvodu
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `${done} / ${total} lekcí dokončeno`;
+  },
+  showLesson(n) {
+    try {
+      this.currentLesson = n;
+      this.save();
+      this.renderNav();
+      const main = document.getElementById('mainContent');
+      if (!main) return;
+      if (!LESSONS[n] || typeof LESSONS[n].render !== 'function') {
+        main.innerHTML = '<div class="lesson"><p>Lekce nenalezena.</p></div>';
+        return;
+      }
+      main.innerHTML = LESSONS[n].render(n);
+      if (LESSONS[n].afterRender) LESSONS[n].afterRender(n);
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } catch (e) {
+      const main = document.getElementById('mainContent');
+      if (main) {
+        main.innerHTML = '<div class="lesson"><p><strong>Chyba při načtení:</strong></p><pre style="background:#f5f5f5;padding:12px;overflow:auto;font-size:.85rem">' + String(e.message) + '</pre><p><button class="btn btn-primary" onclick="location.reload()">Obnovit stránku</button></p></div>';
+      }
+    }
+  }
+};
+
+function goToLesson(n) {
+  if (!APP.isUnlocked(n) && !APP.completed.has(n)) return;
+  APP.showLesson(n);
+}
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
+  localStorage.setItem('ucetnictvi_theme', isDark ? 'light' : 'dark');
+}
+function nextLesson() {
+  if (APP.currentLesson < LESSONS.length - 1) {
+    APP.showLesson(APP.currentLesson + 1);
+  }
+}
+
+// ===================== CONFETTI =====================
+function showConfetti() {
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti-wrap';
+  document.body.appendChild(wrap);
+  const colors = ['#6c5ce7','#00b894','#e74c3c','#f39c12','#3498db','#e84393','#fdcb6e'];
+  for (let i = 0; i < 50; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 1 + 's';
+    c.style.width = (6 + Math.random() * 8) + 'px';
+    c.style.height = (6 + Math.random() * 8) + 'px';
+    wrap.appendChild(c);
+  }
+  setTimeout(() => wrap.remove(), 3000);
+}
+
+// ===================== HELPER FUNCTIONS =====================
+function makeQuiz(questions, quizId, lessonIdx) {
+  let html = '';
+  questions.forEach((q, qi) => {
+    html += `<div class="quiz-q" id="${quizId}_q${qi}">
+      <p>${qi + 1}. ${q.q}</p>
+      <div class="quiz-options">
+        ${q.opts.map((o, oi) => `<div class="quiz-opt" data-qi="${qi}" data-oi="${oi}" onclick="checkQuizAnswer('${quizId}',${qi},${oi},${q.correct},${lessonIdx})">${o}</div>`).join('')}
+      </div>
+      <div class="quiz-explanation" id="${quizId}_exp${qi}">${q.explanation || ''}</div>
+    </div>`;
+  });
+  html += `<div class="score-box" id="${quizId}_score" style="display:none">
+    <div class="stars" id="${quizId}_stars"></div>
+    <div class="score-big" id="${quizId}_scoreNum"></div>
+    <div class="score-label">správných odpovědí</div>
+    <div class="score-msg" id="${quizId}_msg"></div>
+    <div class="btn-group" style="margin-top:16px">
+      <button class="btn btn-primary" onclick="nextLesson()">Pokračovat →</button>
+    </div>
+  </div>`;
+  return html;
+}
+
+const quizState = {};
+function checkQuizAnswer(quizId, qi, oi, correct, lessonIdx) {
+  if (!quizState[quizId]) quizState[quizId] = {};
+  if (quizState[quizId][qi] !== undefined) return; // už zodpovězeno
+  quizState[quizId][qi] = oi;
+
+  const qEl = document.getElementById(`${quizId}_q${qi}`);
+  const opts = qEl.querySelectorAll('.quiz-opt');
+  opts.forEach((o, i) => {
+    if (i === correct) o.classList.add('correct');
+    else if (i === oi && oi !== correct) o.classList.add('wrong');
+  });
+  const exp = document.getElementById(`${quizId}_exp${qi}`);
+  if (exp.textContent) exp.classList.add('show');
+
+  // Zkontroluj, jestli jsou zodpovězeny všechny
+  const totalQ = document.querySelectorAll(`[id^="${quizId}_q"]`).length;
+  const answered = Object.keys(quizState[quizId]).length;
+  if (answered >= totalQ) {
+    setTimeout(() => showQuizScore(quizId, lessonIdx), 500);
+  }
+}
+
+function showQuizScore(quizId, lessonIdx) {
+  const answers = quizState[quizId];
+  const qEls = document.querySelectorAll(`[id^="${quizId}_q"]`);
+  let correctCount = 0;
+  qEls.forEach((el, qi) => {
+    const opts = el.querySelectorAll('.quiz-opt');
+    const correctIdx = [...opts].findIndex(o => o.classList.contains('correct'));
+    if (answers[qi] === correctIdx) correctCount++;
+  });
+  const total = qEls.length;
+  const pct = Math.round((correctCount / total) * 100);
+
+  const scoreBox = document.getElementById(`${quizId}_score`);
+  scoreBox.style.display = 'block';
+  document.getElementById(`${quizId}_scoreNum`).textContent = `${correctCount} / ${total}`;
+
+  const starsCount = pct >= 90 ? 3 : pct >= 60 ? 2 : pct >= 30 ? 1 : 0;
+  document.getElementById(`${quizId}_stars`).innerHTML =
+    '<span class="star-filled">★</span>'.repeat(starsCount) +
+    '<span class="star-empty">★</span>'.repeat(3 - starsCount);
+
+  const msgs = pct >= 90 ? 'Výborně! Tohle máš v malíčku! 🎉' :
+    pct >= 60 ? 'Dobrá práce! Ještě trochu procvičit a bude to! 💪' :
+    pct >= 30 ? 'Nevadí, zkus si lekci pročíst znovu. Půjde to! 📖' :
+    'Začni lekci od začátku a neboj se – každý mistr byl učedníkem! 🌱';
+  document.getElementById(`${quizId}_msg`).textContent = msgs;
+
+  if (pct >= 50) {
+    APP.completeLesson(lessonIdx);
+  }
+  scoreBox.scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+
+function makeFooter(lessonIdx) {
+  const prev = lessonIdx > 0 ? `<button class="btn btn-outline" onclick="goToLesson(${lessonIdx - 1})">← Zpět</button>` : '<span></span>';
+  const next = lessonIdx < LESSONS.length - 1 ? `<button class="btn btn-primary" onclick="nextLesson()">Další lekce →</button>` : '';
+  return `<div class="lesson-footer">${prev}${next}</div>`;
+}
+
+// ===================== LESSON DATA =====================
+const LESSONS = [
+
+// ===== LEKCE 0: ÚVOD =====
+{
+  short: 'Start',
+  render() {
+    return `<div class="welcome">
+      <span class="big-emoji">🏨📚</span>
+      <h1>Účetnictví Rychlokurz - pro MILÁČKA 🧡</h1>
+      <p class="subtitle">Pro hotelovou školu – od naprostých základů k jistotě u zkoušky</p>
+      <div class="lesson" style="text-align:left;margin-top:24px">
+        <h3>Jak kurz funguje</h3>
+        <ul>
+          <li><strong>14 lekcí</strong> – od základů po zásoby, ceniny, zálohy a závěrečný test</li>
+          <li><strong>+ 8 bonusových lekcí</strong> – pro šikovné a zvídavé (odemknou se po závěrečném testu)</li>
+          <li><strong>Závěrečný test</strong> – simulace opravné zkoušky</li>
+          <li>Každá lekce má <strong>cvičení</strong> – uč se praxí!</li>
+          <li>Na konci dostaneš <strong>tahák k tisku</strong> (tlačítko 🖨️ nahoře)</li>
+          <li>Všechny příklady jsou z <strong>prostředí hotelu</strong> 🏨</li>
+        </ul>
+        <div class="tip">
+          <strong>Tip:</strong> Projdi lekce postupně. Každá staví na předchozí. U cvičení se neboj chybovat – chyby jsou nejlepší učitel!
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary btn-lg pop" onclick="APP.completeLesson(0);nextLesson()" style="font-size:1.1rem;padding:14px 36px">
+            Začít se učit! →
+          </button>
+          <button class="btn btn-outline" onclick="APP.completed = new Set(); APP.save(); APP.renderNav(); APP.showLesson(0);">
+            Resetovat postup
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }
+},
+
+// ===== LEKCE 1: CO JE ÚČETNICTVÍ =====
+{
+  short: 'Základy',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📖</span> Lekce 1: Co je účetnictví a proč existuje</h2>
+
+      <div class="analogy">
+        <div class="analogy-title">🏨 Představ si...</div>
+        <p>Představ si, že jsi manažerka hotelu. Každý den přicházejí hosté, platí za pokoje, ty nakupuješ potraviny, platíš zaměstnance, účty za elektřinu...</p>
+        <p><strong>Jak zjistíš, jestli hotel vydělává, nebo prodělává?</strong></p>
+        <p>Přesně k tomu slouží <strong>účetnictví</strong> – je to systém, jak si zapisovat VŠECHNY finanční operace hotelu.</p>
+      </div>
+
+      <h3>Co je účetnictví?</h3>
+      <p>Účetnictví je <strong>uspořádaný systém evidence</strong> (záznamů) o tom, co se děje s penězi a majetkem firmy. Je to jako finanční deník, ale s přesnými pravidly.</p>
+
+      <h3>Proč podvojné"?</h3>
+      <div class="highlight">
+        <strong>Podvojné</strong> = každá operace se zapisuje na <strong>DVĚ místa</strong> (dva účty) současně.
+      </div>
+
+      <div class="analogy">
+        <div class="analogy-title">🫗 Představ si dvě sklenice s vodou</div>
+        <p>Když přeliješ vodu z jedné sklenice do druhé, <strong>v jedné ubyde</strong> a <strong>ve druhé přibyde</strong> – přesně stejné množství.</p>
+        <p>Účetnictví funguje úplně stejně! Když host zaplatí za pokoj hotově:</p>
+        <ul>
+          <li>V <strong>pokladně přibydou peníze</strong> 💰 (zapsáno na jednom účtu)</li>
+          <li>Hotel si <strong>zapíše tržbu</strong> 📈 (zapsáno na druhém účtu)</li>
+        </ul>
+        <p><strong>Vždy dvě strany. Vždy stejná částka. Proto PODVOJNÉ.</strong></p>
+      </div>
+
+      <h3>3 základní pravidla</h3>
+      <ol>
+        <li><strong>Každá operace má 2 zápisy</strong> – na stranu MD (Má dáti) a stranu D (Dal)</li>
+        <li><strong>Částky na obou stranách jsou vždy stejné</strong> – to, co na jedné straně přibyde, na druhé ubyde (nebo vznikne)</li>
+        <li><strong>Musí se to rovnat!</strong> – celkově: AKTIVA = PASIVA (o tom víc v další lekci)</li>
+      </ol>
+
+      <div class="tip">
+        <strong>Proč se to učit?</strong> Účetnictví musí vést ze zákona každá firma. V hotelnictví je důležité pro sledování tržeb, nákladů na provoz, mezd zaměstnanců, zásob v kuchyni...
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz – Ověř si porozumění</div>
+        ${makeQuiz([
+          {
+            q: 'Proč se účetnictví nazývá podvojné"?',
+            opts: ['Protože se dělá dvakrát ročně','Protože každá operace se zapisuje na dva účty současně','Protože existují dva typy firem','Protože se používají dvě měny'],
+            correct: 1,
+            explanation: 'Každá účetní operace se vždy zapíše na DVA účty – jeden na stranu MD a druhý na stranu D.'
+          },
+          {
+            q: 'Host zaplatil za pokoj 2 000 Kč hotově. Co se stane v účetnictví?',
+            opts: ['Zapíše se jen příjem do pokladny','Na jednom účtu přibudou peníze a na druhém se zapíše tržba','Nic, hotovost se nezapisuje','Zapíše se jen tržba'],
+            correct: 1,
+            explanation: 'V pokladně přibudou peníze (jeden účet) a zároveň se zapíše tržba za služby (druhý účet). Vždy DVĚ strany!'
+          },
+          {
+            q: 'Co musí v podvojném účetnictví VŽDY platit?',
+            opts: ['Příjmy musí být větší než výdaje','Aktiva se musí rovnat Pasivům','Firma musí mít alespoň 10 účtů','Účetnictví musí vést účetní'],
+            correct: 1,
+            explanation: 'Bilanční rovnice AKTIVA = PASIVA musí platit vždy. To je základ celého systému.'
+          }
+        ], 'quiz1', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 2: ROZVAHA =====
+{
+  short: 'Rozvaha',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📸</span> Lekce 2: Rozvaha – fotka financí hotelu</h2>
+
+      <p><strong>Rozvaha</strong> (neboli bilance) je přehled toho, co firma vlastní a odkud na to vzala peníze. Je to jako <strong>fotka finančního stavu</strong> hotelu v jednom konkrétním okamžiku.</p>
+
+      <div class="equation">
+        <div class="eq-box eq-aktiva">AKTIVA<br><small>Co hotel MÁ</small></div>
+        <div class="eq-sign">=</div>
+        <div class="eq-box eq-pasiva">PASIVA<br><small>ODKUD to má</small></div>
+      </div>
+
+      <div class="highlight">
+        <strong>Bilanční rovnice: AKTIVA = PASIVA</strong><br>
+        Toto musí platit VŽDY. Pokud se to nerovná, někde je chyba!
+      </div>
+
+      <h3 style="color:var(--blue)">AKTIVA – Co hotel MÁ (majetek)</h3>
+      <div class="analogy">
+        <p>Kdyby ses rozhlédla po hotelu – vše, na co bys ukázala a řekla tohle je naše", jsou <strong>aktiva</strong>:</p>
+      </div>
+      <ul>
+        <li><strong>Stálá aktiva</strong> (dlouhodobý majetek – slouží déle než 1 rok):
+          <ul>
+            <li>🏢 Budova hotelu, pozemek</li>
+            <li>🛏️ Vybavení pokojů, kuchyně, auto</li>
+            <li>💻 Software pro rezervace</li>
+          </ul>
+        </li>
+        <li><strong>Oběžná aktiva</strong> (krátkodobý majetek – stále se mění):
+          <ul>
+            <li>🥩 Zásoby (potraviny v kuchyni, zboží v minibaru)</li>
+            <li>💰 Pokladna (hotovost)</li>
+            <li>🏦 Bankovní účet</li>
+            <li>📋 Pohledávky (hosté/firmy, co ještě nezaplatili)</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 style="color:var(--green)">PASIVA – ODKUD to hotel má (zdroje)</h3>
+      <div class="analogy">
+        <p>Otázka odkud na to máme peníze?":</p>
+      </div>
+      <ul>
+        <li><strong>Vlastní kapitál</strong> (vlastní zdroje):
+          <ul>
+            <li>💎 Základní kapitál (co vložil majitel)</li>
+            <li>📈 Zisk (co hotel vydělal)</li>
+          </ul>
+        </li>
+        <li><strong>Cizí zdroje</strong> (dluhy):
+          <ul>
+            <li>🏦 Bankovní úvěr</li>
+            <li>📄 Dluhy dodavatelům (nezaplacené faktury)</li>
+            <li>👷 Dluhy zaměstnancům (nevyplacené mzdy)</li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="warning">
+        <strong>Pozor!</strong> Pasiva NEJSOU nic špatného! Znamenají jen zdroje financování". I zisk je pasivum, protože je to zdroj, ze kterého hotel financuje svůj majetek.
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Cvičení: Rozřaď položky do Aktiv a Pasiv</div>
+        <p>Přetáhni každou položku do správné kategorie:</p>
+        <div class="dnd-source" id="dndSource2">
+          <div class="dnd-item" draggable="true" data-correct="aktiva" style="background:var(--blue-bg);color:var(--blue)">💰 Pokladna</div>
+          <div class="dnd-item" draggable="true" data-correct="pasiva" style="background:var(--green-bg);color:var(--green)">🏦 Bankovní úvěr</div>
+          <div class="dnd-item" draggable="true" data-correct="aktiva" style="background:var(--blue-bg);color:var(--blue)">🏢 Budova hotelu</div>
+          <div class="dnd-item" draggable="true" data-correct="pasiva" style="background:var(--green-bg);color:var(--green)">💎 Základní kapitál</div>
+          <div class="dnd-item" draggable="true" data-correct="aktiva" style="background:var(--blue-bg);color:var(--blue)">🥩 Zásoby potravin</div>
+          <div class="dnd-item" draggable="true" data-correct="pasiva" style="background:var(--green-bg);color:var(--green)">📄 Dluh dodavateli</div>
+          <div class="dnd-item" draggable="true" data-correct="aktiva" style="background:var(--blue-bg);color:var(--blue)">🏦 Peníze na účtu</div>
+          <div class="dnd-item" draggable="true" data-correct="pasiva" style="background:var(--green-bg);color:var(--green)">📈 Nerozdělený zisk</div>
+          <div class="dnd-item" draggable="true" data-correct="aktiva" style="background:var(--blue-bg);color:var(--blue)">📋 Pohledávka za hostem</div>
+          <div class="dnd-item" draggable="true" data-correct="pasiva" style="background:var(--green-bg);color:var(--green)">👷 Dluh zaměstnancům</div>
+        </div>
+        <div class="dnd-targets">
+          <div>
+            <div class="dnd-target-label" style="color:var(--blue)">AKTIVA (Co hotel MÁ)</div>
+            <div class="dnd-zone" id="dndAktiva" data-target="aktiva"></div>
+          </div>
+          <div>
+            <div class="dnd-target-label" style="color:var(--green)">PASIVA (ODKUD to má)</div>
+            <div class="dnd-zone" id="dndPasiva" data-target="pasiva"></div>
+          </div>
+        </div>
+        <div class="feedback" id="dnd2feedback"></div>
+        <div class="btn-group">
+          <button class="btn btn-accent" onclick="checkDnd2(${idx})">Zkontrolovat ✓</button>
+        </div>
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  },
+  afterRender() { initDragDrop(); }
+},
+
+// ===== LEKCE 3: ÚČTY A T-TABULKA =====
+{
+  short: 'T-účty',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📊</span> Lekce 3: Účty a T-tabulka</h2>
+
+      <p>Teď přichází to nejdůležitější – <strong>jak se účtuje</strong>. Každý účet si můžeš představit jako tabulku ve tvaru písmene <strong>T</strong>:</p>
+
+      <div class="t-account" style="max-width:350px">
+        <div class="t-account-title">211 – Pokladna</div>
+        <div class="t-account-body">
+          <div class="t-account-md">
+            <div class="t-account-md-header">Má dáti (MD)<br><small>levá strana</small></div>
+          </div>
+          <div class="t-account-d">
+            <div class="t-account-d-header">Dal (D)<br><small>pravá strana</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <strong>MD = Má dáti = levá strana</strong> (někdy se říká na vrub")<br>
+        <strong>D = Dal = pravá strana</strong> (někdy se říká ve prospěch")
+      </div>
+
+      <div class="analogy">
+        <div class="analogy-title">🧠 Jak si zapamatovat MD a D?</div>
+        <p><strong>MaDa DaPra"</strong></p>
+        <ul>
+          <li><strong>Ma</strong>-dáti = levá (M je jako vlevo", píšeme zleva)</li>
+          <li><strong>Da</strong>l = <strong>Pra</strong>vá strana</li>
+        </ul>
+        <p>Nebo ještě jednodušeji: <strong>MD = vlevo, D = vpravo</strong>. Vždy. Bez výjimky.</p>
+      </div>
+
+      <h3>Jak se účtuje na kterou stranu?</h3>
+      <p>Tohle je <strong>klíčové pravidlo</strong> celého účetnictví:</p>
+
+      <table class="acc-table">
+        <tr><th>Typ účtu</th><th>Přírůstek (+)</th><th>Úbytek (−)</th><th>Příklad</th></tr>
+        <tr><td><strong style="color:var(--blue)">Aktivní</strong> (majetek)</td><td style="color:var(--green);font-weight:700">MD ← sem</td><td>D</td><td>211 Pokladna, 221 Banka</td></tr>
+        <tr><td><strong style="color:var(--green)">Pasivní</strong> (zdroje)</td><td>MD</td><td style="color:var(--green);font-weight:700">D ← sem</td><td>321 Dodavatelé, 411 Kapitál</td></tr>
+        <tr><td><strong style="color:var(--red)">Nákladový</strong></td><td style="color:var(--green);font-weight:700">MD ← sem</td><td>D</td><td>501 Spotřeba mat., 521 Mzdy</td></tr>
+        <tr><td><strong style="color:var(--purple)">Výnosový</strong></td><td>MD</td><td style="color:var(--green);font-weight:700">D ← sem</td><td>602 Tržby za služby</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Mnemotechnická pomůcka:</strong><br>
+        <strong>Aktivní a Nákladové</strong> účty = přírůstky na <strong>MD</strong> (levé straně)<br>
+        <strong>Pasivní a Výnosové</strong> účty = přírůstky na <strong>D</strong> (pravé straně)<br><br>
+        Prostě: <strong>A + N → MD</strong> &nbsp;|&nbsp; <strong>P + V → D</strong>
+      </div>
+
+      <h3>Příklad: Host zaplatil za pokoj 2 000 Kč hotově</h3>
+      <p>Co se stane?</p>
+      <ul>
+        <li>V <strong>pokladně</strong> (aktivní účet 211) <strong>přibydou</strong> peníze → zapisujeme na <strong>MD</strong></li>
+        <li><strong>Tržba za služby</strong> (výnosový účet 602) <strong>přibyde</strong> → zapisujeme na <strong>D</strong></li>
+      </ul>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+        <div class="t-account" style="flex:1;min-width:200px;max-width:280px">
+          <div class="t-account-title">211 – Pokladna</div>
+          <div class="t-account-body">
+            <div class="t-account-md">
+              <div class="t-account-md-header">MD</div>
+              <div class="t-entry"><span class="label">Tržba za pokoj</span><span class="amount" style="color:var(--green)">2 000</span></div>
+            </div>
+            <div class="t-account-d"><div class="t-account-d-header">D</div></div>
+          </div>
+        </div>
+        <div class="t-account" style="flex:1;min-width:200px;max-width:280px">
+          <div class="t-account-title">602 – Tržby za služby</div>
+          <div class="t-account-body">
+            <div class="t-account-md"><div class="t-account-md-header">MD</div></div>
+            <div class="t-account-d">
+              <div class="t-account-d-header">D</div>
+              <div class="t-entry"><span class="label">Tržba za pokoj</span><span class="amount" style="color:var(--green)">2 000</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center;font-weight:600;color:var(--primary)">Zápis: 211 / 602 &nbsp;&nbsp; (čteme: dvě stě jedenáct lomeno šest set dva")</p>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Cvičení: Na kterou stranu T-účtu to patří?</div>
+        <p>U každé situace klikni na správnou stranu (MD nebo D) pro daný účet:</p>
+        <div id="tClickExercise"></div>
+        <div class="feedback" id="tClickFeedback"></div>
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  },
+  afterRender(idx) {
+    const exercises = [
+      {q: 'Do <strong>pokladny</strong> (aktivní účet) PŘIBYDOU peníze:', correct: 'md', hint: 'Aktivní účet + přírůstek = MD'},
+      {q: 'Z <strong>bankovního účtu</strong> (aktivní účet) ODEJDOU peníze:', correct: 'd', hint: 'Aktivní účet + úbytek = D'},
+      {q: '<strong>Dodavatelům</strong> (pasivní účet) vznikne NOVÝ dluh:', correct: 'd', hint: 'Pasivní účet + přírůstek = D'},
+      {q: 'Dluh <strong>dodavateli</strong> (pasivní účet) se SNÍŽÍ (zaplatíme):', correct: 'md', hint: 'Pasivní účet + úbytek = MD'},
+      {q: 'Vznikne <strong>náklad</strong> na spotřebu materiálu (5xx):', correct: 'md', hint: 'Nákladový účet + přírůstek = MD'},
+      {q: 'Vznikne <strong>výnos</strong> – tržba za ubytování (6xx):', correct: 'd', hint: 'Výnosový účet + přírůstek = D'},
+    ];
+    let answered = 0;
+    const container = document.getElementById('tClickExercise');
+    container.innerHTML = exercises.map((ex, i) => `
+      <div style="background:var(--bg2);border-radius:var(--radius-sm);padding:14px;margin:10px 0" id="tclick_${i}">
+        <p style="margin-bottom:10px;font-size:.92rem">${i + 1}. ${ex.q}</p>
+        <div style="display:flex;gap:10px">
+          <div class="t-click-area" style="flex:1;background:var(--blue-bg);color:var(--blue)" onclick="checkTClick(${i},'md','${ex.correct}',${idx})">MD (levá)</div>
+          <div class="t-click-area" style="flex:1;background:var(--green-bg);color:var(--green)" onclick="checkTClick(${i},'d','${ex.correct}',${idx})">D (pravá)</div>
+        </div>
+        <div class="feedback" id="tclick_fb_${i}" style="font-size:.85rem"></div>
+      </div>
+    `).join('');
+    window.tClickState = {};
+    window.tClickTotal = exercises.length;
+    window.tClickHints = exercises.map(e => e.hint);
+  }
+},
+
+// ===== LEKCE 4: ÚČTOVÁ OSNOVA =====
+{
+  short: 'Účty',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">🗺️</span> Lekce 4: Účtová osnova – mapa účtů</h2>
+
+      <p>Každý účet má své <strong>třímístné číslo</strong>. První číslice říká, do které škatulky" účet patří. Představ si to jako <strong>mapu</strong>, kde každá ulice má své číslo:</p>
+
+      <div class="class-grid">
+        <div class="class-card" style="border-color:var(--blue);background:var(--blue-bg)">
+          <span class="num" style="color:var(--blue)">0</span>
+          <span class="name">Dlouhodobý majetek</span>
+          <small>budova, vybavení, auto</small>
+        </div>
+        <div class="class-card" style="border-color:var(--blue);background:var(--blue-bg)">
+          <span class="num" style="color:var(--blue)">1</span>
+          <span class="name">Zásoby</span>
+          <small>materiál, zboží</small>
+        </div>
+        <div class="class-card" style="border-color:var(--blue);background:var(--blue-bg)">
+          <span class="num" style="color:var(--blue)">2</span>
+          <span class="name">Finance</span>
+          <small>pokladna, banka, úvěry</small>
+        </div>
+        <div class="class-card" style="border-color:var(--orange);background:var(--orange-bg)">
+          <span class="num" style="color:var(--orange)">3</span>
+          <span class="name">Zúčtovací vztahy</span>
+          <small>odběratelé, dodavatelé, DPH</small>
+        </div>
+        <div class="class-card" style="border-color:var(--green);background:var(--green-bg)">
+          <span class="num" style="color:var(--green)">4</span>
+          <span class="name">Kapitál a dluhy</span>
+          <small>vlastní kapitál, úvěry</small>
+        </div>
+        <div class="class-card" style="border-color:var(--red);background:var(--red-bg)">
+          <span class="num" style="color:var(--red)">5</span>
+          <span class="name">Náklady</span>
+          <small>spotřeba, mzdy, služby</small>
+        </div>
+        <div class="class-card" style="border-color:var(--purple);background:var(--purple-bg)">
+          <span class="num" style="color:var(--purple)">6</span>
+          <span class="name">Výnosy</span>
+          <small>tržby za služby, zboží</small>
+        </div>
+        <div class="class-card" style="border-color:var(--text2);background:var(--bg3)">
+          <span class="num" style="color:var(--text2)">7</span>
+          <span class="name">Závěrkové účty</span>
+          <small>uzávěrka roku</small>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>Jak si zapamatovat:</strong> <strong>0-3</strong> = rozvahové účty (aktiva a pasiva), <strong>4</strong> = kapitál, <strong>5</strong> = náklady (to, co hotel UTRATÍ), <strong>6</strong> = výnosy (to, co hotel VYDĚLÁ)
+      </div>
+
+      <h3>TOP účty, které musíš znát</h3>
+      <table class="acc-table">
+        <tr><th>Číslo</th><th>Název</th><th>Typ</th><th>Příklad z hotelu</th></tr>
+        <tr><td class="num">211</td><td>Pokladna</td><td style="color:var(--blue)">Aktivní</td><td>Hotovost na recepci</td></tr>
+        <tr><td class="num">221</td><td>Banka</td><td style="color:var(--blue)">Aktivní</td><td>Firemní bankovní účet</td></tr>
+        <tr><td class="num">261</td><td>Peníze na cestě</td><td style="color:var(--blue)">Aktivní (přechodný!)</td><td>Při převodu pokladna↔banka; na konci roku zůstatek 0</td></tr>
+        <tr><td class="num">112</td><td>Materiál na skladě</td><td style="color:var(--blue)">Aktivní</td><td>Čisticí prostředky, ručníky</td></tr>
+        <tr><td class="num">132</td><td>Zboží na skladě</td><td style="color:var(--blue)">Aktivní</td><td>Minibar, dárkový obchod</td></tr>
+        <tr><td class="num">311</td><td>Odběratelé</td><td style="color:var(--blue)">Aktivní</td><td>Firma objednala pokoj, ještě nezaplatila</td></tr>
+        <tr><td class="num">321</td><td>Dodavatelé</td><td style="color:var(--green)">Pasivní</td><td>Faktura za potraviny, ještě nezaplacená</td></tr>
+        <tr><td class="num">331</td><td>Zaměstnanci</td><td style="color:var(--green)">Pasivní</td><td>Nevyplacené mzdy recepčních</td></tr>
+        <tr><td class="num">343</td><td>DPH</td><td style="color:var(--orange)">Akt./Pas.</td><td>Daňová povinnost</td></tr>
+        <tr><td class="num">411</td><td>Základní kapitál</td><td style="color:var(--green)">Pasivní</td><td>Co vložil majitel hotelu</td></tr>
+        <tr><td class="num">501</td><td>Spotřeba materiálu</td><td style="color:var(--red)">Nákladový</td><td>Potraviny v kuchyni, čistící prostředky</td></tr>
+        <tr><td class="num">502</td><td>Spotřeba energie</td><td style="color:var(--red)">Nákladový</td><td>Elektřina, plyn, voda</td></tr>
+        <tr><td class="num">518</td><td>Ostatní služby</td><td style="color:var(--red)">Nákladový</td><td>Prádelna, internet, reklama</td></tr>
+        <tr><td class="num">521</td><td>Mzdové náklady</td><td style="color:var(--red)">Nákladový</td><td>Hrubé mzdy zaměstnanců</td></tr>
+        <tr><td class="num">602</td><td>Tržby za služby</td><td style="color:var(--purple)">Výnosový</td><td>Ubytování, wellness, konference</td></tr>
+        <tr><td class="num">604</td><td>Tržby za zboží</td><td style="color:var(--purple)">Výnosový</td><td>Minibar, dárkový obchod</td></tr>
+      </table>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Cvičení: Přiřaď číslo účtu k názvu</div>
+        <p>Klikni postupně na číslo vlevo a odpovídající název vpravo:</p>
+        <div class="match-grid" id="matchGrid4"></div>
+        <div class="feedback" id="match4feedback"></div>
+        <div class="btn-group" id="match4btns" style="display:none">
+          <button class="btn btn-primary" onclick="nextLesson()">Pokračovat →</button>
+        </div>
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  },
+  afterRender(idx) {
+    const pairs = [
+      ['211','Pokladna'],['221','Banka'],['321','Dodavatelé'],
+      ['501','Spotřeba materiálu'],['602','Tržby za služby'],['521','Mzdové náklady'],
+      ['331','Zaměstnanci'],['311','Odběratelé']
+    ];
+    // Zamíchej strany nezávisle
+    const lefts = pairs.map(p => p[0]).sort(() => Math.random() - 0.5);
+    const rights = pairs.map(p => p[1]).sort(() => Math.random() - 0.5);
+    const grid = document.getElementById('matchGrid4');
+    grid.innerHTML = '<div>' + lefts.map(l => `<div class="match-item match-left" data-val="${l}" onclick="matchClick(this,'left',${idx})" style="font-family:monospace;font-size:1.1rem">${l}</div>`).join('') +
+      '</div><div>' + rights.map(r => `<div class="match-item match-right" data-val="${r}" onclick="matchClick(this,'right',${idx})">${r}</div>`).join('') + '</div>';
+    window.matchPairs = Object.fromEntries(pairs);
+    window.matchSelected = {left: null, right: null};
+    window.matchedCount = 0;
+    window.matchTotal = pairs.length;
+  }
+},
+
+// ===== LEKCE 5: ÚČETNÍ PŘÍPADY =====
+{
+  short: 'Účtování',
+  render(idx) {
+    const cases = [
+      {desc:'Host platí <strong>hotově za ubytování</strong> 3 000 Kč', md:'211', d:'602', mdName:'Pokladna', dName:'Tržby za služby', amount:'3 000',
+        why:'Přibydou peníze v pokladně (aktivní → MD) a vznikne tržba za služby (výnosový → D)'},
+      {desc:'Hotel <strong>nakoupil potraviny</strong> za hotové za 5 000 Kč', md:'501', d:'211', mdName:'Spotřeba materiálu', dName:'Pokladna', amount:'5 000',
+        why:'Vznikne náklad na materiál (nákladový → MD) a z pokladny ubudou peníze (aktivní, úbytek → D)'},
+      {desc:'Přišla <strong>faktura za elektřinu</strong> 8 000 Kč', md:'502', d:'321', mdName:'Spotřeba energie', dName:'Dodavatelé', amount:'8 000',
+        why:'Vznikne náklad (nákladový → MD) a vznikne dluh dodavateli (pasivní, přírůstek → D)'},
+      {desc:'Hotel <strong>zaplatil fakturu</strong> dodavateli z banky 8 000 Kč', md:'321', d:'221', mdName:'Dodavatelé', dName:'Banka', amount:'8 000',
+        why:'Dluh dodavateli se sníží (pasivní, úbytek → MD) a z banky odejdou peníze (aktivní, úbytek → D)'},
+      {desc:'Host zaplatil <strong>kartou za ubytování</strong> 4 500 Kč', md:'221', d:'602', mdName:'Banka', dName:'Tržby za služby', amount:'4 500',
+        why:'Přibydou peníze na bankovním účtu (aktivní → MD) a vznikne tržba (výnosový → D)'},
+      {desc:'<strong>Předpis hrubých mezd</strong> zaměstnancům 50 000 Kč', md:'521', d:'331', mdName:'Mzdové náklady', dName:'Zaměstnanci', amount:'50 000',
+        why:'Vznikne náklad na mzdy (nákladový → MD) a vznikne dluh zaměstnancům (pasivní → D)'},
+      {desc:'<strong>Výplata mezd</strong> zaměstnancům z banky 50 000 Kč', md:'331', d:'221', mdName:'Zaměstnanci', dName:'Banka', amount:'50 000',
+        why:'Dluh zaměstnancům se sníží (pasivní, úbytek → MD) a z banky odejdou peníze (aktivní, úbytek → D)'},
+      {desc:'Nákup <strong>zboží do minibaru</strong> na fakturu 6 000 Kč', md:'132', d:'321', mdName:'Zboží na skladě', dName:'Dodavatelé', amount:'6 000',
+        why:'Přibyde zboží na skladě (aktivní → MD) a vznikne dluh dodavateli (pasivní → D)'},
+      {desc:'<strong>Výběr peněz z banky do pokladny</strong> 10 000 Kč (2 kroky přes 261!)', md:'261', d:'221', mdName:'Peníze na cestě', dName:'Banka', amount:'10 000',
+        why:'1. krok: Z banky (221 D) jdou peníze na 261 (261 MD). Povinně přes účet 261.'},
+      {desc:'<strong>VBU – peníze z cesty přišly do pokladny</strong> 10 000 Kč', md:'211', d:'261', mdName:'Pokladna', dName:'Peníze na cestě', amount:'10 000',
+        why:'2. krok: Z 261 (261 D) přijdou peníze do pokladny (211 MD). Účet 261 na konci roku nesmí mít zůstatek!'},
+      {desc:'<strong>Odvod hotovosti z pokladny na účet</strong> 10 000 Kč (2 kroky přes 261!)', md:'261', d:'211', mdName:'Peníze na cestě', dName:'Pokladna', amount:'10 000',
+        why:'1. krok VPD: Z pokladny (211 D) jdou peníze na 261 (261 MD).'},
+      {desc:'<strong>VBU – vklad na bankovní účet</strong> 10 000 Kč', md:'221', d:'261', mdName:'Banka', dName:'Peníze na cestě', amount:'10 000',
+        why:'2. krok: Z 261 (261 D) jdou peníze na účet (221 MD).'},
+      {desc:'Hotel dostal <strong>bankovní úvěr</strong> 200 000 Kč', md:'221', d:'461', mdName:'Banka', dName:'Bankovní úvěry', amount:'200 000',
+        why:'Na bankovním účtu přibydou peníze (aktivní → MD) a vznikne dlouhodobý dluh (pasivní → D)'},
+    ];
+    let casesHtml = cases.map((c, i) => `
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:16px;margin:12px 0">
+        <p><strong>${i + 1}.</strong> ${c.desc}</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0">
+          <div class="t-account" style="flex:1;min-width:180px;max-width:250px;margin:0">
+            <div class="t-account-title">${c.md} – ${c.mdName}</div>
+            <div class="t-account-body">
+              <div class="t-account-md"><div class="t-account-md-header">MD</div>
+                <div class="t-entry"><span class="amount" style="color:var(--green)">${c.amount}</span></div>
+              </div>
+              <div class="t-account-d"><div class="t-account-d-header">D</div></div>
+            </div>
+          </div>
+          <div class="t-account" style="flex:1;min-width:180px;max-width:250px;margin:0">
+            <div class="t-account-title">${c.d} – ${c.dName}</div>
+            <div class="t-account-body">
+              <div class="t-account-md"><div class="t-account-md-header">MD</div></div>
+              <div class="t-account-d"><div class="t-account-d-header">D</div>
+                <div class="t-entry"><span class="amount" style="color:var(--green)">${c.amount}</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="text-align:center;font-family:monospace;font-weight:700;font-size:1.05rem;color:var(--primary)">${c.md} / ${c.d} &nbsp; ... &nbsp; ${c.amount} Kč</p>
+        <details style="margin-top:6px"><summary style="cursor:pointer;color:var(--text2);font-size:.88rem">Proč? (klikni pro vysvětlení)</summary>
+        <p style="font-size:.88rem;margin-top:6px;color:var(--text2)">${c.why}</p></details>
+      </div>
+    `).join('');
+
+    return `<div class="lesson">
+      <h2><span class="emoji">✍️</span> Lekce 5: Účtujeme! – Základní účetní případy</h2>
+
+      <p>Teď přichází praxe! Podívej se na <strong>10 nejčastějších operací</strong> v hotelu a jak se zaúčtují. Každý případ je zapsán jako <strong>MD / D</strong> (číslo účtu na levé straně / číslo účtu na pravé straně).</p>
+
+      <div class="highlight">
+        <strong>Formát zápisu:</strong> číslo_účtu_MD / číslo_účtu_D &nbsp;&nbsp; částka<br>
+        Například: 211 / 602 ... 3 000 Kč = na účtu 211 na MD a na účtu 602 na D zapíšeme 3 000 Kč"
+      </div>
+
+      ${casesHtml}
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Cvičení: Zaúčtuj to!</div>
+        <p>Vyber správnou dvojici účtů (MD / D) pro každou situaci:</p>
+        ${makeQuiz([
+          {q:'Hotel nakoupil čisticí prostředky za hotové za 1 200 Kč. Jak zaúčtujeme?',
+           opts:['211 / 501','501 / 211','501 / 321','321 / 211'], correct:1,
+           explanation:'Spotřeba materiálu (501) na MD = náklad přibývá. Z pokladny (211) ubývají peníze na D.'},
+          {q:'Firma zaplatila za konferenci v hotelu převodem na účet 25 000 Kč:',
+           opts:['602 / 221','221 / 602','211 / 602','602 / 211'], correct:1,
+           explanation:'Na banku (221) přibydou peníze (aktivní → MD). Tržba za služby (602) na D = výnos přibývá.'},
+          {q:'Přišla faktura za opravu výtahu 15 000 Kč (ještě nezaplaceno):',
+           opts:['321 / 511','511 / 321','511 / 221','221 / 511'], correct:1,
+           explanation:'Opravy a udržování (511) = náklad na MD. Dodavatelé (321) = dluh na D.'},
+          {q:'Hotel zaplatil z banky fakturu za potraviny 12 000 Kč:',
+           opts:['221 / 321','501 / 221','321 / 221','321 / 211'], correct:2,
+           explanation:'Dluh dodavateli (321) se snižuje → MD. Z banky (221) odejdou peníze → D.'},
+          {q:'Host zaplatil hotově za minibar (zboží) 500 Kč:',
+           opts:['604 / 211','211 / 604','211 / 602','132 / 211'], correct:1,
+           explanation:'Do pokladny (211) přibydou peníze → MD. Tržba za zboží (604) na D.'}
+        ], 'quiz5', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 6: FINANČNÍ ÚČTY (261, PPD, VPD, VBU) =====
+{
+  short: '261',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">💵</span> Lekce 6: Finanční účty – pokladna, banka, peníze na cestě</h2>
+
+      <p>Při převodu peněz <strong>mezi pokladnou a bankou</strong> se <strong>povinně účtuje přes účet 261 – Peníze na cestě</strong>. Nikdy ne přímo 211/221!</p>
+
+      <h3>Účty</h3>
+      <table class="acc-table">
+        <tr><th>Číslo</th><th>Název</th><th>Poznámka</th></tr>
+        <tr><td class="num">211</td><td>Pokladna</td><td>Hotovost v pokladně</td></tr>
+        <tr><td class="num">221</td><td>Bankovní účty</td><td>Pohyby na účtu</td></tr>
+        <tr><td class="num">261</td><td>Peníze na cestě</td><td><strong>Přechodný účet</strong> – na konci roku nesmí mít zůstatek!</td></tr>
+      </table>
+
+      <div class="warning">
+        <strong>Pravidlo:</strong> Při převodu hotovosti mezi účty (pokladna ↔ banka) se <strong>povinně</strong> účtuje přes účet 261. Vždy dva kroky!
+      </div>
+
+      <h3>A) Výběr peněz z banky do pokladny</h3>
+      <p><strong>1. krok – PPD</strong> (příjmový pokladní doklad): peníze opouštějí banku → jdou na cestu".<br>
+      <strong>2. krok – VBU</strong> (výpis bankovního účtu / vnitřní bankovní doklad): peníze z cesty" přijdou do pokladny.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0">
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">221 D</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry"><span class="amount">60 000</span></div></div></div></div>
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">261 MD</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry"><span class="amount">60 000</span></div></div><div class="t-account-d"><div class="t-account-d-header">D</div></div></div></div>
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">261 D</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry"><span class="amount">60 000</span></div></div></div></div>
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">211 MD</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry"><span class="amount">60 000</span></div></div><div class="t-account-d"><div class="t-account-d-header">D</div></div></div></div>
+      </div>
+      <p style="text-align:center;font-weight:600;color:var(--primary)">1. PPD: 261/221 … 2. VBU: 211/261</p>
+
+      <h3>B) Odvod peněz z pokladny na účet (do banky)</h3>
+      <p><strong>1. krok – VPD</strong> (výdajový pokladní doklad): peníze z pokladny jdou na cestu".<br>
+      <strong>2. krok – VBU</strong>: peníze z cesty" přijdou na bankovní účet.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0">
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">211 D</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry"><span class="amount">1 000</span></div></div></div></div>
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">261 MD</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry"><span class="amount">1 000</span></div></div><div class="t-account-d"><div class="t-account-d-header">D</div></div></div></div>
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">261 D</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry"><span class="amount">1 000</span></div></div></div></div>
+        <div class="t-account" style="min-width:140px"><div class="t-account-title">221 MD</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry"><span class="amount">1 000</span></div></div><div class="t-account-d"><div class="t-account-d-header">D</div></div></div></div>
+      </div>
+      <p style="text-align:center;font-weight:600;color:var(--primary)">1. VPD: 261/211 … 2. VBU: 221/261</p>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Při výběru 20 000 Kč z banky do pokladny – první krok (PPD) se zaúčtuje:',
+           opts:['211/261','261/221','221/261','261/211'], correct:1, explanation:'Z banky (221 D) jdou peníze na 261 (261 MD).'},
+          {q:'Účet 261 (Peníze na cestě) na konci roku:',
+           opts:['Může mít libovolný zůstatek','Nesmí vykazovat zůstatek','Musí mít zůstatek rovný pokladně','Pouze u plátců DPH'], correct:1, explanation:'261 je přechodný účet – vše musí být převedeno do 211 nebo 221.'},
+          {q:'Odvod 5 000 Kč z pokladny na účet – druhý krok (VBU):',
+           opts:['261/211','221/261','211/261','261/221'], correct:1, explanation:'Z 261 (261 D) jdou peníze na účet (221 MD).'}
+        ], 'quiz6', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 7: INVENTARIZACE POKLADNY – SCHODEK =====
+{
+  short: 'Schodek',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📉</span> Lekce 7: Inventarizace pokladny – schodek</h2>
+
+      <p>Při <strong>inventarizaci pokladny</strong> zjistíme, jestli skutečná hotovost odpovídá zápisům. Pokud je v pokladně <strong>méně</strong> peněz než v účetnictví, jde o <strong>schodek</strong>.</p>
+
+      <h3>Postup účtování schodku</h3>
+      <ol>
+        <li><strong>1. Schodek</strong> – z pokladny ubude" peněz (v realitě chybí) → 211 D, 569 MD (Manka a škody – náklad).</li>
+        <li><strong>2. Předpis schodku k úhradě</strong> – zaměstnanec má schodek zaplatit → 668 MD (Ostatní operativní náklady / předpis), 335 D (Pohledávky za zaměstnancem).</li>
+        <li><strong>3a. Úhrada schodku v hotovosti</strong> – zaměstnanec vrátí peníze → 211 MD, 335 D.<br>
+        <strong>3b. Úhrada srážkou ze mzdy</strong> – srazí se ze mzdy → 331 MD (Zaměstnanci), 335 D.</li>
+      </ol>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0;font-size:.9rem">
+        <div class="t-account" style="min-width:130px"><div class="t-account-title">211 / 569</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry">schodek 750</div></div></div></div>
+        <div class="t-account" style="min-width:130px"><div class="t-account-title">668 / 335</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry">předpis 750</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry">750</div></div></div></div>
+        <div class="t-account" style="min-width:130px"><div class="t-account-title">211 / 335</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry">úhrada 250</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry">250</div></div></div></div>
+        <div class="t-account" style="min-width:130px"><div class="t-account-title">331 / 335</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry">srážka 300</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry">300</div></div></div></div>
+      </div>
+
+      <div class="tip"><strong>Účty:</strong> 569 Manka a škody (náklad), 668 Ostatní (předpis), 335 Pohledávky za zaměstnanci, 331 Zaměstnanci (závazek – srážka ze mzdy).</div>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Schodek na pokladně 500 Kč se nejdřív zaúčtuje:',
+           opts:['569/211','211/569','335/668','211/335'], correct:1, explanation:'Náklad na manka (569 MD) a úbytek v pokladně (211 D).'},
+          {q:'Předpis schodku k úhradě zaměstnanci znamená zápis:',
+           opts:['335/211','668/335','569/335','331/335'], correct:1, explanation:'Náklad předpisu (668 MD) a pohledávka za zaměstnancem (335 D).'},
+          {q:'Úhrada schodku srážkou ze mzdy:',
+           opts:['335/331','331/335','211/331','569/331'], correct:1, explanation:'Sníží se závazek ke zaměstnanci (331 MD) a pohledávka za ním (335 D).'}
+        ], 'quiz7', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 8: ZÁLOHY ZAMĚSTNANCŮM =====
+{
+  short: 'Zálohy',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">🧾</span> Lekce 8: Zálohy zaměstnancům (účet 335)</h2>
+
+      <p>Firma vyplácí <strong>zálohy</strong> (na služební cestu, drobný nákup). Peníze jdou z pokladny na účet <strong>335 – Pohledávky za zaměstnanci</strong>. Po vyúčtování se záloha rozpadne" na náklad a případně vrácení nebo doplatek.</p>
+
+      <h3>A) Záloha je vyšší než doklad (přeplatek)</h3>
+      <p>Zaměstnanec dostal víc než utratil → vrací přeplatek do pokladny.</p>
+      <ul>
+        <li><strong>1. VPD – záloha</strong> např. 1 000 Kč: 335 MD, 211 D (z pokladny jde záloha).</li>
+        <li><strong>2. Doklad</strong> (cestovné, nákup) např. 621 Kč: 504 MD (nebo 512 cestovné), 335 D (záloha se snižuje o utracenou část).</li>
+        <li><strong>3. Vrácení přeplatku</strong> 379 Kč: 211 MD, 335 D.</li>
+      </ul>
+
+      <h3>B) Záloha je nižší než doklad (doplatek)</h3>
+      <p>Zaměstnanec utratil víc než dostal → firma doplatí.</p>
+      <ul>
+        <li><strong>1. VPD – záloha</strong> 500 Kč: 335 MD, 211 D.</li>
+        <li><strong>2. Doklad</strong> 921 Kč: 504 MD (celých 921), 335 D (500 – záloha), 211 D (421 – doplatek z pokladny). Nebo: 504/335 500 a 504/211 421.</li>
+      </ul>
+
+      <div class="highlight">Účty: <strong>335</strong> Pohledávky za zaměstnanci, <strong>512</strong> Cestovné, <strong>504</strong> Spotřeba služeb (drobný nákup), <strong>211</strong> Pokladna.</div>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'VPD – záloha na služební cestu 1 000 Kč. Zaúčtování:',
+           opts:['211/335','335/211','504/335','335/504'], correct:1, explanation:'Pohledávka za zaměstnancem (335 MD) roste, pokladna (211 D) ubývá.'},
+          {q:'Vyúčtování zálohy: cestovné 982 Kč (záloha byla 1 000). Zaměstnanec vrací 18 Kč. Druhý zápis (vrácení):',
+           opts:['335/211','211/335','504/211','211/504'], correct:1, explanation:'Do pokladny (211 MD) přijdou peníze, pohledávka (335 D) se sníží.'},
+          {q:'Který účet je pohledávky za zaměstnanci?',
+           opts:['331','334','335','512'], correct:2, explanation:'335 = pohledávky za zaměstnanci (zálohy, předpisy k úhradě).'}
+        ], 'quiz8', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 9: CENINY A STRAVENKY =====
+{
+  short: 'Ceniny',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">🎫</span> Lekce 9: Ceniny a stravenky</h2>
+
+      <p><strong>Ceniny</strong> = poštovní známky, jízdenky, letenky, stravenky, kolky. Účtují se na účet <strong>213 – Ceniny</strong> (nebo 243 podle osnovy). Při <strong>spotřebě</strong> jdou do nákladů (518 Ostatní služby, 538 kolky).</p>
+
+      <h3>Nákup a spotřeba cenin</h3>
+      <ul>
+        <li><strong>Nákup cenin</strong> (faktura): 213 MD, 321 D.</li>
+        <li><strong>Spotřeba</strong> (známky, kolky): 518 MD (nebo 538), 213 D.</li>
+      </ul>
+
+      <h3>Stravenky</h3>
+      <p>Výdaje na stravenky jsou <strong>daňově uznatelným nákladem</strong>. Existuje <strong>limit příspěvku zaměstnavatele</strong> (např. 129 Kč) – při překročení se z rozdílu odvádí soc. a zdrav. pojištění a zaměstnanci se zvyšuje základ daně.</p>
+      <p><strong>Výdej stravenek:</strong></p>
+      <ul>
+        <li>Podíl hrazený zaměstnavatelem → náklad (524 nebo 518).</li>
+        <li>Předpis k úhradě zaměstnanci → 335 MD (pohledávka), 213 D (ceniny ubydou). Úhrada srážkou ze mzdy: 331 MD, 335 D.</li>
+      </ul>
+
+      <div class="tip">Účty: <strong>213</strong> Ceniny, <strong>518</strong> Ostatní služby, <strong>538</strong> Ostatní daně a poplatky, <strong>524</strong> (sociální), <strong>335</strong> Pohledávky za zam., <strong>331</strong> Zaměstnanci.</div>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Došla faktura za stravenky 3 000 Kč. Zaúčtování:',
+           opts:['213/321','321/213','518/321','213/518'], correct:0, explanation:'Ceniny (213 MD) přibydou, závazek dodavateli (321 D) roste.'},
+          {q:'Spotřeba poštovních známek 100 Kč:',
+           opts:['518/213','213/518','321/213','518/321'], correct:0, explanation:'Náklad na služby (518 MD), ceniny (213 D) ubydou.'},
+          {q:'Limit příspěvku na stravenku (při překročení další odvody):',
+           opts:['cca 55 Kč','cca 129 Kč','cca 200 Kč','není limit'], correct:1, explanation:'Limit se každý rok může upravit (aktuálně kolem 129 Kč).'}
+        ], 'quiz9', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 10: ZÁSOBY ZPŮSOB A (111, 112, 501) =====
+{
+  short: 'Zásoby',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📦</span> Lekce 10: Účtování zásob – způsob A (materiál)</h2>
+
+      <p><strong>Způsob A:</strong> Nakupované zásoby (materiál) se v průběhu roku účtují na <strong>rozvahový účet zásob</strong>. Do <strong>nákladů</strong> se dostanou až při <strong>spotřebě</strong> (výdejka).</p>
+
+      <h3>Účty</h3>
+      <ul>
+        <li><strong>111 – Pořízení materiálu</strong> – přechodný účet (na konci roku zůstatek 0). Slouží ke zjištění pořizovací ceny (cena + doprava, pojištění, provize…).</li>
+        <li><strong>112 – Materiál na skladě</strong> – zásoby na skladě (rozvaha).</li>
+        <li><strong>501 – Spotřeba materiálu</strong> – náklad při spotřebě (výdejka).</li>
+      </ul>
+
+      <h3>Tok: faktura → pořízení → příjemka → výdejka</h3>
+      <ol>
+        <li><strong>Došla faktura</strong> za materiál (u plátce DPH: cena bez DPH na 111, DPH na 343): 111 MD, 343 MD, 321 D.</li>
+        <li><strong>Příjemka</strong> (příjem na sklad): 112 MD, 111 D (z 111 převedeme na sklad).</li>
+        <li><strong>Výdejka</strong> (spotřeba): 501 MD, 112 D.</li>
+      </ol>
+
+      <div class="highlight">Pro <strong>neplátce DPH</strong> se účtuje cena celkem (včetně DPH) na 111. Pro <strong>plátce</strong> cena bez DPH + DPH zvlášť na 343.</div>
+
+      <p><strong>Příklad:</strong> Faktura 112 100 Kč (materiál 100 000 + DPH 12 100). MD 111 100 000, MD 343 12 100, D 321 112 100.</p>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Účet 111 (Pořízení materiálu) na konci roku:',
+           opts:['Musí mít zůstatek','Nesmí vykazovat zůstatek','Pouze u plátců DPH','Pouze u zásob'], correct:1, explanation:'111 je přechodný účet pro zjištění pořizovací ceny.'},
+          {q:'Při výdejce materiálu (spotřeba) zaúčtujeme:',
+           opts:['501/112','112/501','111/501','501/321'], correct:0, explanation:'Náklad spotřeby (501 MD), zásoby (112 D) ubydou.'},
+          {q:'Příjemka materiálu na sklad (z 111):',
+           opts:['112/111','111/112','321/112','112/321'], correct:0, explanation:'Materiál na skladě (112 MD) přibyde, 111 (D) se vyprázdní.'}
+        ], 'quiz10', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 11: PRÁCE V HODINĚ – PŘÍKLAD =====
+{
+  short: 'Příklad',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">✏️</span> Lekce 11: Práce v hodině – celý příklad</h2>
+
+      <p>Šest operací za sebou – přesně jak může přijít u zkoušky. Projdi si zápisy a ověř, že každá částka jde na dvě strany.</p>
+
+      <div class="exercise">
+        <div class="exercise-title">Zadání</div>
+        <ol style="margin:12px 0 20px 20px;font-size:.95rem">
+          <li>Schodek na pokladně 750 Kč</li>
+          <li>Předpis schodku k úhradě zaměstnanci</li>
+          <li>VPD – odvod do banky 1 000 Kč</li>
+          <li>Úhrada schodku srážkou ze mzdy 300 Kč</li>
+          <li>PPD – úhrada schodku 250 Kč</li>
+          <li>VBU – odvod do banky 1 000 Kč</li>
+        </ol>
+      </div>
+
+      <h3>Řešení – zápisy</h3>
+      <table class="acc-table">
+        <tr><th>Operace</th><th>MD</th><th>D</th><th>Částka</th></tr>
+        <tr><td>1. Schodek</td><td>569 Manka a škody</td><td>211 Pokladna</td><td>750</td></tr>
+        <tr><td>2. Předpis schodku</td><td>668 Ostatní</td><td>335 Pohledávky za zam.</td><td>750</td></tr>
+        <tr><td>3. VPD odvod</td><td>261 Peníze na cestě</td><td>211 Pokladna</td><td>1 000</td></tr>
+        <tr><td>4. Úhrada srážkou</td><td>331 Zaměstnanci</td><td>335 Pohledávky za zam.</td><td>300</td></tr>
+        <tr><td>5. PPD úhrada schodku</td><td>211 Pokladna</td><td>335 Pohledávky za zam.</td><td>250</td></tr>
+        <tr><td>6. VBU odvod</td><td>221 Banka</td><td>261 Peníze na cestě</td><td>1 000</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Kontrola:</strong> Úhrada schodku 750 = 300 (srážka) + 250 (hotovost) + 200 (zůstává jako pohledávka 335, nebo další úhrada). Převod 1 000 Kč: nejdřív 211→261 (VPD), pak 261→221 (VBU).
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== LEKCE 12: ÚČETNÍ DOKLADY =====
+{
+  short: 'Doklady',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📄</span> Lekce 6: Účetní doklady</h2>
+
+      <p>Aby bylo účetnictví průkazné, <strong>každá operace musí mít doklad</strong> – papír (nebo elektronický dokument), který dokazuje, že se operace skutečně stala.</p>
+
+      <h3>Typy účetních dokladů</h3>
+      <table class="acc-table">
+        <tr><th>Doklad</th><th>Kdy se používá</th><th>Příklad z hotelu</th></tr>
+        <tr><td><strong>Faktura přijatá (FP)</strong></td><td>Když hotel NAKUPUJE na fakturu</td><td>Faktura od dodavatele potravin</td></tr>
+        <tr><td><strong>Faktura vydaná (FV)</strong></td><td>Když hotel PRODÁVÁ na fakturu</td><td>Faktura firmě za konferenci</td></tr>
+        <tr><td><strong>Příjmový pokladní doklad (PPD)</strong></td><td>Příjem hotovosti do pokladny</td><td>Host platí za pokoj hotově</td></tr>
+        <tr><td><strong>Výdajový pokladní doklad (VPD)</strong></td><td>Výdej hotovosti z pokladny</td><td>Nákup drobného materiálu</td></tr>
+        <tr><td><strong>Výpis z bankovního účtu (VBÚ)</strong></td><td>Pohyby na bankovním účtu</td><td>Platba kartou, příchozí platba</td></tr>
+        <tr><td><strong>Interní doklad (ID)</strong></td><td>Vnitřní operace firmy</td><td>Předpis mezd, odpisy majetku</td></tr>
+      </table>
+
+      <h3>Co musí každý doklad obsahovat?</h3>
+      <div class="highlight">
+        <strong>Povinné náležitosti účetního dokladu:</strong>
+        <ol>
+          <li><strong>Označení dokladu</strong> (číslo, typ) – např. FP-2026/001</li>
+          <li><strong>Popis operace</strong> – co se stalo</li>
+          <li><strong>Peněžní částka</strong> – kolik</li>
+          <li><strong>Datum vystavení</strong> dokladu</li>
+          <li><strong>Datum uskutečnění</strong> operace</li>
+          <li><strong>Podpis / identifikace</strong> odpovědné osoby</li>
+        </ol>
+      </div>
+
+      <div class="tip">
+        <strong>Zkratky na zapamatování:</strong> FP = Faktura Přijatá, FV = Faktura Vydaná, PPD = Příjmový Pokladní Doklad, VPD = Výdajový Pokladní Doklad, VBÚ = Výpis z Bankovního Účtu, ID = Interní Doklad
+      </div>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Cvičení: Najdi chybu v dokladu</div>
+        <p>Každý z těchto dokladů má chybu. Klikni na řádek, kde je problém:</p>
+
+        <div class="doc-card" id="doc1">
+          <span class="doc-type">FAKTURA PŘIJATÁ</span>
+          <div class="doc-line" onclick="findDocError(this,1)">Číslo dokladu: FP-2026/015</div>
+          <div class="doc-line" onclick="findDocError(this,1)">Dodavatel: Makro Cash & Carry</div>
+          <div class="doc-line" onclick="findDocError(this,1)">Popis: Nákup potravin pro kuchyni</div>
+          <div class="doc-line" data-is-error="1" onclick="findDocError(this,1)">Částka: (neuvedena)</div>
+          <div class="doc-line" onclick="findDocError(this,1)">Datum vystavení: 15. 1. 2026</div>
+          <div class="doc-line" onclick="findDocError(this,1)">Podpis: Jan Novák</div>
+        </div>
+        <div class="feedback" id="doc1fb"></div>
+
+        <div class="doc-card" id="doc2">
+          <span class="doc-type">PŘÍJMOVÝ POKLADNÍ DOKLAD</span>
+          <div class="doc-line" data-is-error="1" onclick="findDocError(this,2)">Číslo dokladu: (chybí číslo)</div>
+          <div class="doc-line" onclick="findDocError(this,2)">Přijato od: Host – Karel Dvořák</div>
+          <div class="doc-line" onclick="findDocError(this,2)">Za: Ubytování 2 noci</div>
+          <div class="doc-line" onclick="findDocError(this,2)">Částka: 4 200 Kč</div>
+          <div class="doc-line" onclick="findDocError(this,2)">Datum: 20. 1. 2026</div>
+          <div class="doc-line" onclick="findDocError(this,2)">Podpis: Marie Svobodová</div>
+        </div>
+        <div class="feedback" id="doc2fb"></div>
+
+        <div class="doc-card" id="doc3">
+          <span class="doc-type">FAKTURA VYDANÁ</span>
+          <div class="doc-line" onclick="findDocError(this,3)">Číslo dokladu: FV-2026/042</div>
+          <div class="doc-line" onclick="findDocError(this,3)">Odběratel: ABC s.r.o.</div>
+          <div class="doc-line" onclick="findDocError(this,3)">Popis: Pronájem konferenčního sálu</div>
+          <div class="doc-line" onclick="findDocError(this,3)">Částka: 15 000 Kč</div>
+          <div class="doc-line" onclick="findDocError(this,3)">Datum vystavení: 25. 1. 2026</div>
+          <div class="doc-line" data-is-error="1" onclick="findDocError(this,3)">Podpis: (chybí)</div>
+        </div>
+        <div class="feedback" id="doc3fb"></div>
+
+        <div id="docScore" style="display:none" class="score-box">
+          <div class="score-big" id="docScoreNum"></div>
+          <div class="score-label">chyb nalezeno ze 3</div>
+          <div class="btn-group"><button class="btn btn-primary" onclick="nextLesson()">Pokračovat →</button></div>
+        </div>
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  },
+  afterRender() {
+    window.docErrors = {found: 0, total: 3};
+  }
+},
+
+// ===== LEKCE 7: DPH =====
+{
+  short: 'DPH',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">💰</span> Lekce 7: DPH pro začátečníky</h2>
+
+      <h3>Co je DPH?</h3>
+      <p><strong>DPH = Daň z přidané hodnoty</strong> – daň, kterou platí konečný spotřebitel (zákazník). Firma ji pouze vybírá" pro stát.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🏨 Příklad z hotelu</div>
+        <p>Když host zaplatí za pokoj <strong>3 360 Kč</strong>, tak z toho:</p>
+        <ul>
+          <li><strong>3 000 Kč</strong> = cena za ubytování (základ daně) → jde hotelu</li>
+          <li><strong>360 Kč</strong> = DPH 12 % → hotel to pošle státu</li>
+        </ul>
+        <p>Hotel je jen průtokový ohřívač" pro DPH – vybere od hosta a odvede státu.</p>
+      </div>
+
+      <h3>Sazby DPH (od roku 2024)</h3>
+      <table class="acc-table">
+        <tr><th>Sazba</th><th>Procento</th><th>Co sem patří</th></tr>
+        <tr><td><strong>Základní</strong></td><td style="font-weight:700;font-size:1.1rem">21 %</td><td>Většina zboží a služeb, alkohol, wellness</td></tr>
+        <tr><td><strong>Snížená</strong></td><td style="font-weight:700;font-size:1.1rem">12 %</td><td>Ubytování, stravování, potraviny, knihy</td></tr>
+      </table>
+
+      <h3>DPH na vstupu vs. na výstupu</h3>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:16px 0">
+        <div style="flex:1;min-width:200px;background:var(--blue-bg);padding:16px;border-radius:var(--radius-sm);border:2px solid var(--blue)">
+          <strong style="color:var(--blue)">DPH na VSTUPU</strong><br>
+          = DPH, které hotel ZAPLATÍ při nákupu<br>
+          <strong>Účtujeme: 343 na MD</strong><br>
+          <small>Hotel má nárok na odpočet (stát vrátí)</small>
+        </div>
+        <div style="flex:1;min-width:200px;background:var(--green-bg);padding:16px;border-radius:var(--radius-sm);border:2px solid var(--green)">
+          <strong style="color:var(--green)">DPH na VÝSTUPU</strong><br>
+          = DPH, které hotel VYBERE při prodeji<br>
+          <strong>Účtujeme: 343 na D</strong><br>
+          <small>Hotel to musí odvést státu</small>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <strong>Daňová povinnost = DPH na výstupu − DPH na vstupu</strong><br>
+        Pokud výstup > vstup → hotel platí státu<br>
+        Pokud vstup > výstup → stát vrací hotelu (nadměrný odpočet)
+      </div>
+
+      <h3>Příklad účtování s DPH</h3>
+      <p><strong>Přijatá faktura za potraviny: základ 10 000 Kč + DPH 12 % = 1 200 Kč, celkem 11 200 Kč</strong></p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        <div class="t-account" style="flex:1;min-width:160px;max-width:220px;margin:4px">
+          <div class="t-account-title">501 – Spotř. mat.</div>
+          <div class="t-account-body">
+            <div class="t-account-md"><div class="t-account-md-header">MD</div>
+              <div class="t-entry"><span class="amount" style="color:var(--red)">10 000</span></div>
+            </div>
+            <div class="t-account-d"><div class="t-account-d-header">D</div></div>
+          </div>
+        </div>
+        <div class="t-account" style="flex:1;min-width:160px;max-width:220px;margin:4px">
+          <div class="t-account-title">343 – DPH</div>
+          <div class="t-account-body">
+            <div class="t-account-md"><div class="t-account-md-header">MD</div>
+              <div class="t-entry"><span class="amount" style="color:var(--blue)">1 200</span></div>
+            </div>
+            <div class="t-account-d"><div class="t-account-d-header">D</div></div>
+          </div>
+        </div>
+        <div class="t-account" style="flex:1;min-width:160px;max-width:220px;margin:4px">
+          <div class="t-account-title">321 – Dodavatelé</div>
+          <div class="t-account-body">
+            <div class="t-account-md"><div class="t-account-md-header">MD</div></div>
+            <div class="t-account-d"><div class="t-account-d-header">D</div>
+              <div class="t-entry"><span class="amount" style="color:var(--green)">11 200</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center;font-family:monospace;font-weight:700;color:var(--primary)">501/321 = 10 000 &nbsp;|&nbsp; 343/321 = 1 200</p>
+      <div class="tip">Celkově: MD = 10 000 + 1 200 = 11 200 a D = 11 200. <strong>Rovná se!</strong></div>
+
+      <div class="exercise">
+        <div class="exercise-title">🎯 Cvičení: Spočítej DPH</div>
+        <div id="dphExercise"></div>
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  },
+  afterRender(idx) {
+    const exercises = [
+      {q:'Ubytování hosta: základ 5 000 Kč, sazba DPH 12 %. Kolik je DPH a celková cena?', dph:600, total:5600},
+      {q:'Nákup alkoholu do baru: základ 8 000 Kč, sazba DPH 21 %. Kolik je DPH?', dph:1680, total:9680},
+      {q:'Faktura za úklid (služba): celková cena 12 100 Kč včetně DPH 21 %. Kolik je základ a kolik DPH?', dph:2100, total:12100, zaklad:10000},
+    ];
+    const container = document.getElementById('dphExercise');
+    container.innerHTML = exercises.map((ex, i) => `
+      <div style="background:var(--bg2);padding:14px;border-radius:var(--radius-sm);margin:10px 0">
+        <p style="font-weight:600">${i + 1}. ${ex.q}</p>
+        <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:8px">
+          ${ex.zaklad ? `<div><label style="font-size:.85rem;font-weight:600">Základ (Kč):</label><input type="number" id="dph_z_${i}" style="width:120px;padding:8px;border:2px solid var(--bg3);border-radius:var(--radius-xs);font-size:1rem;background:var(--bg2);color:var(--text)"></div>` : ''}
+          <div><label style="font-size:.85rem;font-weight:600">DPH (Kč):</label><input type="number" id="dph_d_${i}" style="width:120px;padding:8px;border:2px solid var(--bg3);border-radius:var(--radius-xs);font-size:1rem;background:var(--bg2);color:var(--text)"></div>
+          ${!ex.zaklad ? `<div><label style="font-size:.85rem;font-weight:600">Celkem (Kč):</label><input type="number" id="dph_t_${i}" style="width:120px;padding:8px;border:2px solid var(--bg3);border-radius:var(--radius-xs);font-size:1rem;background:var(--bg2);color:var(--text)"></div>` : ''}
+          <button class="btn btn-accent" onclick="checkDph(${i},${ex.dph},${ex.total},${ex.zaklad || 0},${idx})">Ověřit</button>
+        </div>
+        <div class="feedback" id="dph_fb_${i}"></div>
+      </div>
+    `).join('');
+    window.dphSolved = 0;
+    window.dphTotal = exercises.length;
+  }
+},
+
+// ===== LEKCE 8: ZÁVĚREČNÝ TEST =====
+{
+  short: 'Test',
+  render(idx) {
+    const questions = [
+      {q:'Proč se účetnictví nazývá podvojné"?',
+       opts:['Dělá se za 2 účetní období','Každá operace se zapisuje na 2 účty','Existují 2 druhy účtů','Používají se 2 měny'],correct:1},
+      {q:'Co jsou AKTIVA?',
+       opts:['Zdroje financování','Majetek firmy','Dluhy firmy','Výnosy firmy'],correct:1},
+      {q:'Co jsou PASIVA?',
+       opts:['Majetek firmy','Peníze v pokladně','Zdroje financování (odkud firma vzala peníze na majetek)','Náklady firmy'],correct:2},
+      {q:'Bilanční rovnice zní:',
+       opts:['Aktiva + Pasiva = 0','Aktiva = Náklady','Aktiva = Pasiva','Výnosy = Náklady'],correct:2},
+      {q:'Na kterou stranu T-účtu se zapisuje PŘÍRŮSTEK na AKTIVNÍM účtu?',
+       opts:['Na stranu D (pravá)','Na stranu MD (levá)','Na obě strany','Záleží na částce'],correct:1},
+      {q:'Na kterou stranu T-účtu se zapisuje PŘÍRŮSTEK na PASIVNÍM účtu?',
+       opts:['Na stranu MD (levá)','Na stranu D (pravá)','Nikam','Na obě strany'],correct:1},
+      {q:'Účet 211 je:',
+       opts:['Banka','Dodavatelé','Pokladna','Odběratelé'],correct:2},
+      {q:'Účet 321 je:',
+       opts:['Odběratelé','Zaměstnanci','Pokladna','Dodavatelé'],correct:3},
+      {q:'Účet 602 je:',
+       opts:['Spotřeba materiálu','Mzdové náklady','Tržby za služby','Tržby za zboží'],correct:2},
+      {q:'Účet 501 je:',
+       opts:['Spotřeba materiálu','Spotřeba energie','Mzdové náklady','Pokladna'],correct:0},
+      {q:'Host zaplatil hotově za ubytování 2 500 Kč. Jak zaúčtujeme?',
+       opts:['602 / 211','211 / 321','211 / 602','221 / 602'],correct:2},
+      {q:'Přijatá faktura za elektřinu 6 000 Kč:',
+       opts:['321 / 502','502 / 321','502 / 211','211 / 502'],correct:1},
+      {q:'Výplata mezd zaměstnancům z banky 40 000 Kč:',
+       opts:['521 / 331','331 / 221','221 / 331','521 / 221'],correct:1},
+      {q:'Které tvrzení o DPH je PRAVDIVÉ?',
+       opts:['DPH platí vždy firma','DPH na vstupu se účtuje na 343 D','DPH na výstupu se účtuje na 343 D','DPH se neúčtuje na žádný účet'],correct:2},
+      {q:'Základní sazba DPH v ČR je:',
+       opts:['12 %','15 %','19 %','21 %'],correct:3},
+      {q:'Ubytovací služby mají sazbu DPH:',
+       opts:['21 %','15 %','12 %','0 %'],correct:2},
+      {q:'Příjmový pokladní doklad (PPD) se vystavuje, když:',
+       opts:['Firma platí dodavateli','Do pokladny přijmou peníze','Z banky odejdou peníze','Přijde faktura'],correct:1},
+      {q:'Které z těchto NENÍ povinnou náležitostí účetního dokladu?',
+       opts:['Datum vystavení','Peněžní částka','Razítko firmy','Označení dokladu'],correct:2},
+      {q:'Předpis hrubých mezd zaměstnancům 30 000 Kč se zaúčtuje:',
+       opts:['331 / 521','521 / 331','521 / 221','221 / 331'],correct:1},
+      {q:'Účet 221 (Banka) je:',
+       opts:['Pasivní','Nákladový','Výnosový','Aktivní'],correct:3},
+    ];
+
+    // Zamícháme otázky
+    const shuffled = questions.map((q, i) => ({...q, origIdx: i})).sort(() => Math.random() - 0.5);
+
+    let html = `<div class="lesson">
+      <h2><span class="emoji">🎓</span> Závěrečný test – simulace zkoušky</h2>
+      <div class="warning">
+        <strong>Simulace opravné zkoušky!</strong> 20 otázek ze všech lekcí. Odpověz na všechny a uvidíš své skóre. Na známku 3 potřebuješ alespoň 60 % (12 z 20).
+      </div>`;
+
+    shuffled.forEach((q, i) => {
+      html += `<div class="test-question" id="testQ${i}">
+        <div class="q-num">Otázka ${i + 1} / 20</div>
+        <p>${q.q}</p>
+        <div class="quiz-options">
+          ${q.opts.map((o, oi) => `<div class="quiz-opt" data-qi="${i}" data-oi="${oi}" onclick="testAnswer(${i},${oi},${q.correct})">${o}</div>`).join('')}
+        </div>
+      </div>`;
+    });
+
+    html += `<div class="btn-group" id="testSubmitWrap" style="display:none">
+        <button class="btn btn-primary" style="font-size:1.1rem;padding:14px 32px" onclick="showTestResults(${idx})">Zobrazit výsledky 📊</button>
+      </div>
+      <div id="testResults"></div>
+    </div>`;
+    return html;
+  },
+  afterRender() {
+    window.testState = {};
+    window.testTotal = 20;
+    window.testAnswered = 0;
+  }
+},
+
+// ===================== BONUSOVÉ LEKCE (pro šikovné a zvídavé) =====================
+
+// ===== BONUS 1: Složitější zápis – více účtů =====
+{
+  short: '3 účty',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">🧩</span> Bonus 1: Složitější zápis – na tři účty</h2>
+      <p>Jedna operace může ovlivnit <strong>více než dva účty</strong>. Pořád ale platí: součet na MD = součet na D.</p>
+      <h3>Příklad: Faktura za materiál 112 100 Kč (základ 100 000 + DPH 12 100)</h3>
+      <p>Plátce DPH rozloží zápis na <strong>tři účty</strong>: 111 (pořízení), 343 (DPH), 321 (dodavatel – celková částka).</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:16px 0">
+        <div class="t-account" style="min-width:120px"><div class="t-account-title">111 MD</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry">100 000</div></div><div class="t-account-d"><div class="t-account-d-header">D</div></div></div></div>
+        <div class="t-account" style="min-width:120px"><div class="t-account-title">343 MD</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div><div class="t-entry">12 100</div></div><div class="t-account-d"><div class="t-account-d-header">D</div></div></div></div>
+        <div class="t-account" style="min-width:120px"><div class="t-account-title">321 D</div><div class="t-account-body"><div class="t-account-md"><div class="t-account-md-header">MD</div></div><div class="t-account-d"><div class="t-account-d-header">D</div><div class="t-entry">112 100</div></div></div></div>
+      </div>
+      <p style="text-align:center;font-weight:700;color:var(--primary)">MD: 100 000 + 12 100 = 112 100 &nbsp;|&nbsp; D: 112 100 ✓</p>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Faktura celkem 24 200 Kč (základ 20 000 + DPH 21 %). Kolik jde na 343 MD?',
+           opts:['4 200','20 000','24 200','3 640'], correct:0, explanation: 'DPH 21 % z 20 000 = 4 200 Kč.'},
+          {q:'Při zápisu na 3 účty musí platit:',
+           opts:['Součet MD = součet D','MD musí být vždy větší','D musí být vždy větší','Počet zápisů na MD = na D'], correct:0, explanation: 'Podvojnost: součet stran se vždy rovná.'}
+        ], 'quizB1', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== BONUS 2: Náklady a výdaje příštích období =====
+{
+  short: 'Náklady příštích období',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📅</span> Bonus 2: Náklady a výdaje příštích období</h2>
+      <p>Někdy firma <strong>zaplatí v tomto roce</strong>, ale náklad (nebo výnos) <strong>patří až do roku příštího</strong>. Např. nájemné za leden zaplacené v prosinci.</p>
+      <h3>Účty</h3>
+      <ul>
+        <li><strong>379 – Náklady příštích období</strong> (aktivum) – už jsme zaplatili, ale náklad teprve nastane.</li>
+        <li><strong>381 – Výdaje příštích období</strong> (pasivum) – souvisí s výnosy příštích období.</li>
+      </ul>
+      <p>Zjednodušeně: zaplatíme nájem 12 000 Kč za leden v prosinci → 379 MD, 221 D. V lednu pak spotřebujeme náklad: 518 MD (nájem), 379 D.</p>
+      <div class="tip">Na střední škole se často probírá jen základní představa – důležité je vědět, že existují účty pro přesun mezi obdobími.</p>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Účet 379 (Náklady příštích období) je typicky:',
+           opts:['Aktivní','Pasivní','Nákladový','Výnosový'], correct:0, explanation: "379 je aktivum, predstavuje naklad ktery teprve nastane."},
+          {q:'Když v lednu spotřebujeme náklad z 379, zaúčtujeme:',
+           opts:['Náklad 5xx/518 na MD, 379 na D','379 na MD, 221 na D','379 na MD, 5xx na D','518 na D, 379 na MD'], correct:0, explanation: 'Náklad v tomto období (518 MD) a úbytek z 379 (379 D).'}
+        ], 'quizB2', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== BONUS 3: Odběratelé a dodavatelé v praxi =====
+{
+  short: '311 a 321',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">🤝</span> Bonus 3: Odběratelé (311) a dodavatelé (321) v praxi</h2>
+      <p><strong>311 – Odběratelé</strong> = firma má pohledávku (někdo jí dluží). <strong>321 – Dodavatelé</strong> = firma má závazek (ona dluží).</p>
+      <h3>Kdy roste a kdy klesá?</h3>
+      <ul>
+        <li>Prodej na fakturu: <strong>311 MD</strong> (pohledávka roste), 604/602 D. Úhrada od odběratele: 221 MD, <strong>311 D</strong> (pohledávka klesá).</li>
+        <li>Nákup na fakturu: 501/132 MD, <strong>321 D</strong> (závazek roste). Úhrada dodavateli: <strong>321 MD</strong> (závazek klesá), 221 D.</li>
+      </ul>
+      <h3>Zálohy</h3>
+      <p>Záloha <strong>od</strong> odběratele (platí dopředu): 221 MD, 311 D (nebo zvláštní účet 319). Záloha <strong>dodavateli</strong>: 321 MD, 221 D (nebo 315).</p>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Host zaplatil dopředu za konferenci převodem 10 000 Kč. Zaúčtování:',
+           opts:['221/311','311/221','602/221','221/602'], correct:0, explanation: 'Peníze na účtu (221 MD), pohledávka se sníží nebo vznikne záloha (311 D).'},
+          {q:'Účet 321 (Dodavatelé) roste na straně:',
+           opts:['D (Dal)','MD (Má dáti)','Obou','Záleží'], correct:0, explanation: '321 je pasivní – přírůstek závazku je na D.'}
+        ], 'quizB3', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== BONUS 4: Základní odpisy =====
+{
+  short: 'Odpisy',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📉</span> Bonus 4: Základní odpisy</h2>
+      <p>Dlouhodobý majetek (auto, vybavení) se <strong>opotřebovává</strong>. Toto opotřebení je náklad – <strong>odpis</strong>. Účet <strong>551 – Odpisy</strong> (náklad), účet <strong>082 – Oprávky</strong> (k aktivu – snižuje jeho hodnotu).</p>
+      <h3>Zjednodušený zápis</h3>
+      <p>Měsíční odpis vybavení 2 000 Kč: <strong>551 MD</strong> (náklad), <strong>082 D</strong> (oprávka roste). Účet 082 je oprávka k majetku – na rozvaze se uvádí aktivum minus oprávka.</p>
+      <div class="tip">Na střední se často pracuje jen s 551 a 082 v základní podobě. Důležité: odpis = náklad (551 MD), ne výdej peněz!</div>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Odpis dlouhodobého majetku se zaúčtuje:',
+           opts:['551 MD, 082 D','082 MD, 551 D','551 MD, 221 D','022 D, 551 MD'], correct:0, explanation: 'Náklad 551 MD, oprávka (úbytek hodnoty majetku) 082 D.'},
+          {q:'Odpis znamená:',
+           opts:['Výdej peněz z pokladny','Úbytek hodnoty majetku (náklad)','Zvýšení zisku','Platbu dodavateli'], correct:1, explanation: 'Odpis = vyjádření opotřebení majetku jako náklad.'}
+        ], 'quizB4', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== BONUS 5: Výsledovka – náklady a výnosy =====
+{
+  short: 'Výsledovka',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">📊</span> Bonus 5: Výsledovka – náklady a výnosy</h2>
+      <p><strong>Výsledovka</strong> (výkaz zisku a ztráty) ukazuje, jak firma <strong>vydělala nebo prodělala</strong> v daném období.</p>
+      <p><strong>Výnosy</strong> (6xx) = co firma vydělala (tržby 602, 604…). <strong>Náklady</strong> (5xx) = co firma utratila (spotřeba, mzdy, odpisy…).</p>
+      <div class="equation">
+        <div class="eq-box eq-pasiva">VÝNOSY (6xx)</div>
+        <div class="eq-sign">−</div>
+        <div class="eq-box eq-naklady">NÁKLADY (5xx)</div>
+        <div class="eq-sign">=</div>
+        <div class="eq-box eq-aktiva">VÝSLEDEK (zisk / ztráta)</div>
+      </div>
+      <p>Zisk = výnosy větší než náklady. Ztráta = náklady větší než výnosy. Na konci roku se účty 5xx a 6xx uzavřou do výsledku (závěrkové účty 7xx).</p>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Tržby za ubytování 100 000 Kč, náklady 70 000 Kč. Výsledek je:',
+           opts:['Zisk 30 000','Ztráta 30 000','Zisk 170 000','Nelze určit'], correct:0, explanation: 'Výnosy − Náklady = 100 000 − 70 000 = 30 000 zisk.'},
+          {q:'Účty 5xx jsou:',
+           opts:['Nákladové','Výnosové','Rozvahové aktivní','Rozvahové pasivní'], correct:0, explanation: '5xx = náklady (spotřeba, mzdy, odpisy…).'}
+        ], 'quizB5', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== BONUS 6: Hotel – minibar a ubytování =====
+{
+  short: 'Hotel minibar',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">🏨</span> Bonus 6: Hotel v praxi – minibar a ubytování</h2>
+      <p>Jeden den v hotelu: host se ubytoval, zaplatil kartou za pokoj 3 000 Kč, a z minibaru si vzal pití za 150 Kč (zaplatil hotově).</p>
+      <h3>Zápisy</h3>
+      <ul>
+        <li><strong>Ubytování kartou 3 000 Kč:</strong> 221 MD, 602 D (tržby za služby).</li>
+        <li><strong>Minibar hotově 150 Kč:</strong> 211 MD, 604 D (tržby za zboží). Zároveň bychom snížili zásoby minibaru: 501 MD, 132 D (pokud to hotel eviduje při prodeji).</li>
+      </ul>
+      <p>Nákup zboží do minibaru (předtím): 132 MD, 321 D (nebo 132 MD, 343 MD, 321 D u plátce). Prodej = výnos 604 a úbytek zásob 132 → 501.</p>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Host zaplatil hotově za snídani 250 Kč. Zaúčtování:',
+           opts:['211/602','602/211','211/604','221/602'], correct:0, explanation: 'Pokladna (211 MD), tržba za služby – stravování (602 D).'},
+          {q:'Účet 132 (Zboží na skladě) ubývá při:',
+           opts:['Prodeji zboží (výdej do nákladu)','Nákupu zboží','Úhradě faktury','Inventarizaci'], correct:0, explanation: 'Při prodeji: 501 MD, 132 D – zboží ubývá.'}
+        ], 'quizB6', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== BONUS 7: Kontrola a typické chyby =====
+{
+  short: 'Kontrola a chyby',
+  render(idx) {
+    return `<div class="lesson">
+      <h2><span class="emoji">🔍</span> Bonus 7: Kontrola a typické chyby</h2>
+      <p>V podvojném účetnictví <strong>součet všech MD = součet všech D</strong>. Když se to nerovná, někde je chyba.</p>
+      <h3>Typické chyby</h3>
+      <ul>
+        <li><strong>Špatná strana účtu</strong> – přírůstek na aktivním účtu musí na MD, ne na D.</li>
+        <li><strong>Vynechaný druhý zápis</strong> – každá operace má dva zápisy (dva účty).</li>
+        <li><strong>Převod banka ↔ pokladna bez 261</strong> – vždy dva kroky přes účet 261.</li>
+        <li><strong>Záměna podobných účtů</strong> – 311 vs. 321 (odběratelé vs. dodavatelé), 335 vs. 331 (pohledávky vs. závazky ke zaměstnancům).</li>
+      </ul>
+      <h3>Jak hledat chybu</h3>
+      <p>Zkontroluj součty MD a D po každé operaci. Zkontroluj, zda u převodů hotovosti jsi použil 261. Zkontroluj, zda u každého dokladu máš zápis na obou stranách.</p>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz</div>
+        ${makeQuiz([
+          {q:'Součet MD se nerovná součtu D. To znamená:',
+           opts:['Je třeba najít a opravit chybu','Je to v pořádku u ztráty','Stačí zaokrouhlit','Účetnictví je špatně vedené'], correct:0, explanation: 'V podvojném účetnictví musí MD = D vždy.'},
+          {q:'Při výběru z banky do pokladny jsem zaúčtoval jen 211/221. Co je špatně?',
+           opts:['Chybí krok přes 261','Mělo být 221/211','Nelze výbírat do pokladny','Nic'], correct:0, explanation: 'Převod mezi 211 a 221 musí jít vždy přes 261 ve dvou krocích.'}
+        ], 'quizB7', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+},
+
+// ===== BONUS 8: Mega-práce v hodině =====
+{
+  short: 'Mega příklad',
+  render(idx) {
+    const ops = [
+      {n:1, text:'PPD – výběr z banky 20 000 Kč', md:'261', d:'221', am:'20 000'},
+      {n:2, text:'VBU – výběr na pokladnu 20 000 Kč', md:'211', d:'261', am:'20 000'},
+      {n:3, text:'VPD – záloha na služební cestu 1 000 Kč', md:'335', d:'211', am:'1 000'},
+      {n:4, text:'Schodek na pokladně 500 Kč', md:'569', d:'211', am:'500'},
+      {n:5, text:'Předpis schodku k úhradě 500 Kč', md:'668', d:'335', am:'500'},
+      {n:6, text:'Vyúčtování zálohy – cestovné 982 Kč, vrácení 18 Kč', md1:'512', d1:'335', am1:'982', md2:'211', d2:'335', am2:'18'},
+      {n:7, text:'Došla faktura za stravenky 3 000 Kč', md:'213', d:'321', am:'3 000'},
+      {n:8, text:'Úhrada schodku srážkou ze mzdy 500 Kč', md:'331', d:'335', am:'500'},
+    ];
+    let tableRows = ops.map(o => {
+      if (o.md2) return `<tr><td>${o.n}a</td><td>${o.text.split(',')[0]}</td><td>${o.md1}</td><td>${o.d1}</td><td>${o.am1}</td></tr><tr><td>${o.n}b</td><td>Vrácení přeplatku</td><td>${o.md2}</td><td>${o.d2}</td><td>${o.am2}</td></tr>`;
+      return `<tr><td>${o.n}</td><td>${o.text}</td><td>${o.md}</td><td>${o.d}</td><td>${o.am}</td></tr>`;
+    }).join('');
+    return `<div class="lesson">
+      <h2><span class="emoji">🎯</span> Bonus 8: Mega-práce v hodině</h2>
+      <p>Jeden velký příklad, který spojuje <strong>výběr přes 261</strong>, <strong>zálohy</strong>, <strong>schodek</strong>, <strong>vyúčtování</strong>, <strong>ceniny</strong> a <strong>úhradu srážkou</strong>. Projdi si každý řádek a ověř zápisy.</p>
+      <div class="exercise">
+        <div class="exercise-title">Zadání a řešení</div>
+        <table class="acc-table">
+          <tr><th>#</th><th>Operace</th><th>MD</th><th>D</th><th>Částka</th></tr>
+          ${tableRows}
+        </table>
+      </div>
+      <div class="tip">Operace 6: nejdřív vyúčtování cestovného (512/335 982), pak vrácení přeplatku (211/335 18). Operace 1–2: výběr vždy přes 261!</div>
+      <div class="exercise">
+        <div class="exercise-title">🎯 Kvíz na závěr</div>
+        ${makeQuiz([
+          {q:'V tomto mega-příkladu kolikrát vystupuje účet 261?',
+           opts:['Dvakrát (MD i D) v operacích 1 a 2','Jednou','Třikrát','Nikdy'], correct:0, explanation: '261 MD v operaci 1 (PPD), 261 D v operaci 2 (VBU).'},
+          {q:'Úhrada schodku 500 Kč srážkou:',
+           opts:['331/335','335/331','569/331','211/335'], correct:0, explanation: 'Závazek zaměstnancům (331) klesá, pohledávka (335) klesá.'}
+        ], 'quizB8', idx)}
+      </div>
+      ${makeFooter(idx)}
+    </div>`;
+  }
+}
+];
+
+// ===================== EXERCISE HANDLERS =====================
+
+// Drag & Drop
+function initDragDrop() {
+  document.querySelectorAll('.dnd-item').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', '');
+      e.target.style.opacity = '0.5';
+      window._dragItem = e.target;
+    });
+    item.addEventListener('dragend', e => {
+      e.target.style.opacity = '1';
+      window._dragItem = null;
+    });
+    // Podpora pro mobil (touch)
+    item.addEventListener('touchstart', e => {
+      window._dragItem = e.target.closest('.dnd-item');
+    });
+  });
+
+  document.querySelectorAll('.dnd-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => {e.preventDefault(); zone.classList.add('over');});
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('over');
+      if (window._dragItem) {
+        zone.appendChild(window._dragItem);
+        window._dragItem = null;
+      }
+    });
+    // Touch
+    zone.addEventListener('touchend', e => {
+      if (window._dragItem) {
+        zone.appendChild(window._dragItem);
+        window._dragItem = null;
+      }
+    });
+  });
+
+  // Kliknutí jako fallback pro přesun
+  document.querySelectorAll('.dnd-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (item.parentElement.classList.contains('dnd-source')) {
+        // Přesun do první neprázdné zóny, nebo střídej
+        if (!window._selectedDnd) {
+          window._selectedDnd = item;
+          item.style.outline = '3px solid var(--primary)';
+        }
+      }
+    });
+  });
+  document.querySelectorAll('.dnd-zone').forEach(zone => {
+    zone.addEventListener('click', () => {
+      if (window._selectedDnd) {
+        zone.appendChild(window._selectedDnd);
+        window._selectedDnd.style.outline = '';
+        window._selectedDnd = null;
+      }
+    });
+  });
+}
+
+function checkDnd2(lessonIdx) {
+  const zones = document.querySelectorAll('.dnd-zone');
+  let correct = 0, total = 0;
+  zones.forEach(zone => {
+    const target = zone.dataset.target;
+    zone.querySelectorAll('.dnd-item').forEach(item => {
+      total++;
+      if (item.dataset.correct === target) {
+        item.classList.add('correct-place');
+        item.classList.remove('wrong-place');
+        correct++;
+      } else {
+        item.classList.add('wrong-place');
+        item.classList.remove('correct-place');
+      }
+    });
+  });
+  const source = document.getElementById('dndSource2');
+  const remaining = source.querySelectorAll('.dnd-item').length;
+  if (remaining > 0) {
+    showFeedback('dnd2feedback', `Ještě máš ${remaining} položek v zásobníku! Přetáhni je do správné kategorie.`, 'error');
+    return;
+  }
+  if (correct === total) {
+    showFeedback('dnd2feedback', `Výborně! Všech ${total} položek je správně! 🎉`, 'success');
+    APP.completeLesson(lessonIdx);
+  } else {
+    showFeedback('dnd2feedback', `${correct} z ${total} správně. Špatně zařazené se zatřásly – zkus je přesunout! 💪`, 'error');
+  }
+}
+
+// T-Click exercise
+function checkTClick(i, clicked, correct, lessonIdx) {
+  if (window.tClickState[i] !== undefined) return;
+  window.tClickState[i] = clicked;
+  const container = document.getElementById(`tclick_${i}`);
+  const areas = container.querySelectorAll('.t-click-area');
+  const fb = document.getElementById(`tclick_fb_${i}`);
+
+  if (clicked === correct) {
+    areas.forEach(a => {
+      if ((clicked === 'md' && a.textContent.includes('MD')) || (clicked === 'd' && a.textContent.includes('D')))
+        a.classList.add('flash-green');
+    });
+    fb.textContent = '✓ Správně! ' + window.tClickHints[i];
+    fb.className = 'feedback show success';
+  } else {
+    areas.forEach(a => {
+      if ((clicked === 'md' && a.textContent.includes('MD')) || (clicked === 'd' && a.textContent.includes('D')))
+        a.classList.add('flash-red');
+      if ((correct === 'md' && a.textContent.includes('MD')) || (correct === 'd' && a.textContent.includes('D')))
+        a.classList.add('flash-green');
+    });
+    fb.textContent = '✗ Správná odpověď: ' + (correct === 'md' ? 'MD (levá)' : 'D (pravá)') + '. ' + window.tClickHints[i];
+    fb.className = 'feedback show error';
+  }
+
+  const answeredCount = Object.keys(window.tClickState).length;
+  if (answeredCount >= window.tClickTotal) {
+    const correctCount = Object.entries(window.tClickState).filter(([k, v]) => v === (
+      ['md','d','d','md','md','d'][k]
+    )).length;
+    if (correctCount >= Math.ceil(window.tClickTotal * 0.5)) {
+      setTimeout(() => APP.completeLesson(lessonIdx), 600);
+    }
+  }
+}
+
+// Matching exercise
+function matchClick(el, side, lessonIdx) {
+  if (el.classList.contains('matched')) return;
+  const sel = window.matchSelected;
+  // Deselektuj předchozí ze stejné strany
+  if (sel[side]) sel[side].classList.remove('selected');
+  el.classList.add('selected');
+  sel[side] = el;
+
+  if (sel.left && sel.right) {
+    const leftVal = sel.left.dataset.val;
+    const rightVal = sel.right.dataset.val;
+    if (window.matchPairs[leftVal] === rightVal) {
+      sel.left.classList.add('matched');
+      sel.right.classList.add('matched');
+      sel.left.classList.remove('selected');
+      sel.right.classList.remove('selected');
+      window.matchedCount++;
+      if (window.matchedCount >= window.matchTotal) {
+        showFeedback('match4feedback', 'Výborně! Všechny účty přiřazeny správně! 🎉', 'success');
+        document.getElementById('match4btns').style.display = 'flex';
+        APP.completeLesson(lessonIdx);
+      }
+    } else {
+      sel.left.classList.add('wrong-match');
+      sel.right.classList.add('wrong-match');
+      setTimeout(() => {
+        sel.left.classList.remove('wrong-match', 'selected');
+        sel.right.classList.remove('wrong-match', 'selected');
+        window.matchSelected = {left: null, right: null};
+      }, 500);
+      return;
+    }
+    window.matchSelected = {left: null, right: null};
+  }
+}
+
+// Document error exercise – kliknout můžeš na libovolný řádek, správný je jen ten s chybou
+function findDocError(el, docNum) {
+  if (el.classList.contains('found')) return;
+  if (el.getAttribute('data-is-error') !== '1') {
+    showFeedback(`doc${docNum}fb`, 'Tady chyba není. Zkus jiný řádek.', 'error');
+    return;
+  }
+  el.classList.add('found');
+  const msgs = {
+    1: 'Správně! Chybí peněžní částka – povinná náležitost dokladu.',
+    2: 'Správně! Chybí číslo/označení dokladu – povinná náležitost.',
+    3: 'Správně! Chybí podpis odpovědné osoby – povinná náležitost.'
+  };
+  showFeedback(`doc${docNum}fb`, msgs[docNum], 'success');
+  window.docErrors.found++;
+  if (window.docErrors.found >= window.docErrors.total) {
+    const score = document.getElementById('docScore');
+    document.getElementById('docScoreNum').textContent = '3 / 3';
+    score.style.display = 'block';
+    APP.completeLesson(12); // lekce Doklady
+    score.scrollIntoView({behavior: 'smooth'});
+  }
+}
+
+// DPH exercise
+function checkDph(i, correctDph, correctTotal, correctZaklad, lessonIdx) {
+  const dphInput = document.getElementById(`dph_d_${i}`);
+  const dphVal = parseInt(dphInput.value);
+  let ok = true;
+
+  if (correctZaklad > 0) {
+    const zInput = document.getElementById(`dph_z_${i}`);
+    const zVal = parseInt(zInput.value);
+    if (zVal !== correctZaklad) ok = false;
+  } else {
+    const tInput = document.getElementById(`dph_t_${i}`);
+    const tVal = parseInt(tInput.value);
+    if (tVal !== correctTotal) ok = false;
+  }
+  if (dphVal !== correctDph) ok = false;
+
+  const fb = document.getElementById(`dph_fb_${i}`);
+  if (ok) {
+    fb.textContent = '✓ Správně!';
+    fb.className = 'feedback show success';
+    window.dphSolved++;
+    if (window.dphSolved >= window.dphTotal) {
+      setTimeout(() => APP.completeLesson(lessonIdx), 400);
+    }
+  } else {
+    let hint = '';
+    if (correctZaklad > 0) {
+      hint = `Základ = ${correctZaklad.toLocaleString()} Kč, DPH = ${correctDph.toLocaleString()} Kč. Tip: z celkové ceny včetně DPH 21% je základ = celkem / 1,21`;
+    } else {
+      hint = `DPH = ${correctDph.toLocaleString()} Kč, Celkem = ${correctTotal.toLocaleString()} Kč.`;
+    }
+    fb.textContent = '✗ Zkus to znovu. ' + hint;
+    fb.className = 'feedback show error';
+  }
+}
+
+// Final test
+function testAnswer(qi, oi, correct) {
+  if (window.testState[qi] !== undefined) return;
+  window.testState[qi] = oi;
+  window.testAnswered++;
+
+  const qEl = document.getElementById(`testQ${qi}`);
+  const opts = qEl.querySelectorAll('.quiz-opt');
+  opts.forEach((o, i) => {
+    if (i === correct) o.classList.add('correct');
+    else if (i === oi && oi !== correct) o.classList.add('wrong');
+  });
+
+  if (window.testAnswered >= window.testTotal) {
+    document.getElementById('testSubmitWrap').style.display = 'flex';
+    document.getElementById('testSubmitWrap').scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function showTestResults(lessonIdx) {
+  let correct = 0;
+  for (let i = 0; i < window.testTotal; i++) {
+    const qEl = document.getElementById(`testQ${i}`);
+    const opts = qEl.querySelectorAll('.quiz-opt');
+    const correctIdx = [...opts].findIndex(o => o.classList.contains('correct'));
+    if (window.testState[i] === correctIdx) correct++;
+  }
+  const pct = Math.round((correct / window.testTotal) * 100);
+  let grade, gradeColor, msg;
+  if (pct >= 90) { grade = '1 (výborně)'; gradeColor = 'var(--green)'; msg = 'Vynikající! Na zkoušku jsi připravená na jedničku! 🏆'; }
+  else if (pct >= 75) { grade = '2 (chvalitebně)'; gradeColor = 'var(--accent)'; msg = 'Skvělé! Dvojka je super výsledek! 🎉'; }
+  else if (pct >= 60) { grade = '3 (dobře)'; gradeColor = 'var(--blue)'; msg = 'Máš to! Trojka stačí na složení zkoušky! 💪'; }
+  else if (pct >= 40) { grade = '4 (dostatečně)'; gradeColor = 'var(--orange)'; msg = 'Těsně. Projdi si lekce ještě jednou a bude to! 📖'; }
+  else { grade = '5 (nedostatečně)'; gradeColor = 'var(--red)'; msg = 'Nevzdávej to! Projdi znovu lekce a zkus test ještě jednou. 🌱'; }
+
+  const resultsDiv = document.getElementById('testResults');
+  resultsDiv.innerHTML = `
+    <div class="test-summary">
+      <div class="big-score" style="color:${gradeColor}">${correct} / ${window.testTotal}</div>
+      <div class="grade" style="color:${gradeColor}">Známka: ${grade}</div>
+      <p>${msg}</p>
+      <p style="margin-top:8px;font-size:.9rem;color:var(--text2)">${pct} % správně</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="APP.showLesson(${lessonIdx})">Zkusit test znovu 🔄</button>
+      <button class="btn btn-outline" onclick="APP.showLesson(0)">Zpět na úvod</button>
+      <button class="btn btn-accent" onclick="window.print()">Vytisknout tahák 🖨️</button>
+    </div>
+  `;
+  resultsDiv.scrollIntoView({behavior:'smooth'});
+  if (pct >= 50) APP.completeLesson(lessonIdx);
+  if (pct >= 60) showConfetti();
+}
+
+// Feedback helper
+function showFeedback(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `feedback show ${type}`;
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    APP.init();
+    var errEl = document.getElementById('mainContentError');
+    if (errEl) errEl.style.display = 'none';
+  } catch (e) {
+    var errEl = document.getElementById('mainContentError');
+    if (errEl) {
+      errEl.textContent = 'Chyba: ' + (e.message || e);
+      errEl.style.display = 'block';
+    }
+    console.error(e);
+  }
+});
+</script>
+</body>
+</html>
