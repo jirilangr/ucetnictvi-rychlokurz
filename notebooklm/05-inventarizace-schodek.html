@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventarizace pokladny – schodek – pro NotebookLM</title>
+</head>
+<body>
+
+<h1>Inventarizace pokladny – schodek</h1>
+
+<h2>Co je inventarizace pokladny?</h2>
+<p>Při inventarizaci pokladny zjistíme, jestli skutečná hotovost v pokladně odpovídá zápisům v účetnictví. Když je v pokladně méně peněz než v účetnictví, jde o <strong>schodek</strong> (manko).</p>
+
+<h2>Postup účtování schodku</h2>
+
+<h3>1. Zjištění schodku</h3>
+<p>Schodek se zaúčtuje jako náklad na účet <strong>569 – Manka a škody</strong>. Z pokladny „ubude“ peněz (v realitě chybí). Účtování: 569 MD, 211 D (částka schodku, např. 750 Kč).</p>
+
+<h3>2. Předpis schodku k úhradě</h3>
+<p>Zaměstnanec (nebo odpovědná osoba) má schodek zaplatit. Vznikne pohledávka firmy vůči zaměstnanci. Účtování: 668 MD (Ostatní operativní náklady – předpis), 335 D (Pohledávky za zaměstnanci). Částka stejná jako schodek (např. 750 Kč).</p>
+
+<h3>3. Úhrada schodku</h3>
+<p>Zaměstnanec může schodek uhradit dvěma způsoby:</p>
+<ul>
+  <li><strong>V hotovosti</strong> (vrátí peníze do pokladny): 211 MD, 335 D (částka úhrady, např. 250 Kč).</li>
+  <li><strong>Srážkou ze mzdy</strong>: 331 MD (Zaměstnanci – sníží se závazek, protože srážka „zaplatí“ část dluhu), 335 D (částka srážky, např. 300 Kč).</li>
+</ul>
+<p>Může být i kombinace: část hotovostí, část srážkou ze mzdy. Celková úhrada by měla odpovídat předpisu (750 Kč).</p>
+
+<h2>Použité účty</h2>
+<ul>
+  <li>569 – Manka a škody (náklad)</li>
+  <li>668 – Ostatní operativní náklady (předpis k úhradě)</li>
+  <li>335 – Pohledávky za zaměstnanci</li>
+  <li>331 – Zaměstnanci (závazek – při srážce ze mzdy)</li>
+  <li>211 – Pokladna</li>
+</ul>
+
+<h2>Shrnutí</h2>
+<p>Schodek = v pokladně je méně než v zápisech. 1) Zaúčtovat schodek: 569/211. 2) Předpis k úhradě: 668/335. 3) Úhrada: hotovost 211/335 nebo srážka 331/335.</p>
+
+</body>
+</html>

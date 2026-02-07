@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Zásoby způsob A a DPH – pro NotebookLM</title>
+</head>
+<body>
+
+<h1>Účtování zásob – způsob A (materiál) a DPH</h1>
+
+<h2>Zásoby – způsob A</h2>
+<p>Nakupované zásoby (materiál) se v průběhu roku účtují na rozvahový účet zásob (první účtová třída). Do nákladů se dostanou až při spotřebě – tedy když materiál skutečně použijeme (výdejka). Do té doby jsou to majetek firmy, ne náklad.</p>
+
+<h2>Účty pro materiál (způsob A)</h2>
+<ul>
+  <li><strong>111 – Pořízení materiálu:</strong> přechodný účet. Slouží ke zjištění pořizovací ceny materiálu (cena pořízení + doprava, pojištění přepravy, provize atd.). Na konci roku na něm nesmí zůstat zůstatek.</li>
+  <li><strong>112 – Materiál na skladě:</strong> zásoby materiálu na skladě (rozvaha).</li>
+  <li><strong>501 – Spotřeba materiálu:</strong> náklad při spotřebě materiálu (výdejka).</li>
+</ul>
+
+<h2>Tok od nákupu ke spotřebě</h2>
+<ol>
+  <li><strong>Došla faktura</strong> za materiál (u plátce DPH: cena bez DPH na 111, DPH zvlášť na 343): 111 MD, 343 MD, 321 D. U neplátce DPH: cena celkem včetně DPH na 111, 321 D.</li>
+  <li><strong>Příjemka</strong> (příjem na sklad): 112 MD, 111 D. Z účtu 111 se materiál převede na sklad (112).</li>
+  <li><strong>Výdejka</strong> (spotřeba): 501 MD, 112 D. Materiál se spotřebuje – náklad a úbytek zásob.</li>
+</ol>
+
+<h2>DPH – účet 343</h2>
+<p>DPH je daň z přidané hodnoty. Firma ji při nákupu platí (DPH na vstupu) a při prodeji vybírá od zákazníků (DPH na výstupu).</p>
+<ul>
+  <li><strong>DPH na vstupu</strong> (levá strana účtu 343 – MD): pohledávka vůči finančnímu úřadu (nárok na odpočet). Účtujeme 343 MD.</li>
+  <li><strong>DPH na výstupu</strong> (pravá strana účtu 343 – D): závazek vůči finančnímu úřadu (musíme odvést). Účtujeme 343 D.</li>
+</ul>
+<p>Daňová povinnost = DPH na výstupu minus DPH na vstupu. Pokud výstup větší než vstup, firma odvádí státu. Pokud vstup větší než výstup, stát vrací (nadměrný odpočet).</p>
+
+<h2>Příklad s DPH</h2>
+<p>Faktura za materiál: základ 100 000 Kč, DPH 12 100 Kč, celkem 112 100 Kč. Účtování: 111 MD 100 000, 343 MD 12 100, 321 D 112 100.</p>
+
+<h2>Shrnutí</h2>
+<p>Zásoby způsob A: faktura → 111 (+ 343 u plátce), příjemka 112/111, výdejka 501/112. Účet 111 a 343 přechodné. DPH: vstup 343 MD, výstup 343 D.</p>
+
+</body>
+</html>

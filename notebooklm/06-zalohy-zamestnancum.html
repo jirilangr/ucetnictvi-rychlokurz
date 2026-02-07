@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Zálohy zaměstnancům (335) – pro NotebookLM</title>
+</head>
+<body>
+
+<h1>Zálohy zaměstnancům – účet 335</h1>
+
+<h2>Co jsou zálohy zaměstnancům?</h2>
+<p>Firma často vyplácí zaměstnancům zálohy – na služební cestu, na drobný nákup a podobně. Peníze jdou z pokladny. Záloha se účtuje na účet <strong>335 – Pohledávky za zaměstnanci</strong> (pohledávka firmy vůči zaměstnanci). Až zaměstnanec přinese doklady, záloha se „vyúčtuje“: část jde do nákladů (cestovné, nákup), zbytek se řeší jako vrácení přeplatku nebo doplatek.</p>
+
+<h2>Scénář A: Záloha je vyšší než doklad (přeplatek)</h2>
+<p>Zaměstnanec dostal víc než utratil – vrací přeplatek do pokladny.</p>
+<ol>
+  <li><strong>VPD – vyplacení zálohy</strong> (např. 1 000 Kč): 335 MD, 211 D. Z pokladny jde záloha, roste pohledávka za zaměstnancem.</li>
+  <li><strong>Vyúčtování – doklad</strong> (např. cestovné 621 Kč): 512 MD (Cestovné) nebo 504 (Spotřeba služeb – drobný nákup), 335 D. Část zálohy „zmizí“ do nákladu.</li>
+  <li><strong>Vrácení přeplatku</strong> (1 000 − 621 = 379 Kč): 211 MD, 335 D. Zaměstnanec vrací zbytek do pokladny.</li>
+</ol>
+
+<h2>Scénář B: Záloha je nižší než doklad (doplatek)</h2>
+<p>Zaměstnanec utratil víc než dostal – firma doplatí.</p>
+<ol>
+  <li><strong>VPD – záloha</strong> (např. 500 Kč): 335 MD, 211 D.</li>
+  <li><strong>Vyúčtování – doklad</strong> (např. 921 Kč): celá částka jde do nákladu (504 nebo 512). Záloha 500 Kč sníží 335 (504 MD, 335 D 500). Zbývající část 421 Kč je doplatek z pokladny: 504 MD, 211 D 421. (Nebo jeden zápis 504/335 500 a 504/211 421.)</li>
+</ol>
+
+<h2>Použité účty</h2>
+<ul>
+  <li>335 – Pohledávky za zaměstnanci</li>
+  <li>211 – Pokladna</li>
+  <li>512 – Cestovné (služební cesta)</li>
+  <li>504 – Spotřeba služeb (drobný nákup apod.)</li>
+</ul>
+
+<h2>Shrnutí</h2>
+<p>Záloha z pokladny: 335/211. Vyúčtování do nákladu: 512 nebo 504 na MD, 335 na D (část zálohy). Přeplatek zpět do pokladny: 211/335. Doplatek z pokladny: 504 nebo 512 na MD, 211 na D.</p>
+
+</body>
+</html>

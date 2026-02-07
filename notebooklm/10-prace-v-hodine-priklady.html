@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Práce v hodině – příklady s řešením – pro NotebookLM</title>
+</head>
+<body>
+
+<h1>Práce v hodině – kompletní příklad s řešením</h1>
+
+<h2>Zadání (6 operací)</h2>
+<ol>
+  <li>Schodek na pokladně 750 Kč</li>
+  <li>Předpis schodku k úhradě zaměstnanci</li>
+  <li>VPD – odvod do banky 1 000 Kč</li>
+  <li>Úhrada schodku srážkou ze mzdy 300 Kč</li>
+  <li>PPD – úhrada schodku 250 Kč</li>
+  <li>VBU – odvod do banky 1 000 Kč</li>
+</ol>
+
+<h2>Řešení – účetní zápisy</h2>
+<table border="1" cellpadding="8" cellspacing="0">
+  <tr><th>Operace</th><th>MD (účet a název)</th><th>D (účet a název)</th><th>Částka (Kč)</th></tr>
+  <tr><td>1. Schodek na pokladně</td><td>569 Manka a škody</td><td>211 Pokladna</td><td>750</td></tr>
+  <tr><td>2. Předpis schodku k úhradě</td><td>668 Ostatní operativní náklady</td><td>335 Pohledávky za zaměstnanci</td><td>750</td></tr>
+  <tr><td>3. VPD – odvod do banky</td><td>261 Peníze na cestě</td><td>211 Pokladna</td><td>1 000</td></tr>
+  <tr><td>4. Úhrada schodku srážkou ze mzdy</td><td>331 Zaměstnanci</td><td>335 Pohledávky za zaměstnanci</td><td>300</td></tr>
+  <tr><td>5. PPD – úhrada schodku</td><td>211 Pokladna</td><td>335 Pohledávky za zaměstnanci</td><td>250</td></tr>
+  <tr><td>6. VBU – odvod do banky</td><td>221 Banka</td><td>261 Peníze na cestě</td><td>1 000</td></tr>
+</table>
+
+<h2>Vysvětlení po krocích</h2>
+<ul>
+  <li><strong>1.</strong> Schodek = v pokladně chybí 750 Kč. Náklad (569) roste, pokladna (211) klesá.</li>
+  <li><strong>2.</strong> Předpis = zaměstnanec má schodek uhradit. Náklad předpisu (668), pohledávka (335) roste.</li>
+  <li><strong>3.</strong> Odvod z pokladny – první krok: peníze z 211 jdou na 261 (VPD).</li>
+  <li><strong>4.</strong> Část schodku se uhradí srážkou ze mzdy: závazek zaměstnancům (331) klesá, pohledávka (335) klesá.</li>
+  <li><strong>5.</strong> Část schodku zaměstnanec vrátí v hotovosti: pokladna (211) roste, pohledávka (335) klesá.</li>
+  <li><strong>6.</strong> Druhý krok odvodu: peníze z 261 jdou na účet (221). Účet 261 je po krocích 3 a 6 vyrovnán.</li>
+</ul>
+
+<h2>Kontrola úhrady schodku</h2>
+<p>Celkový předpis schodku: 750 Kč. Úhrada: 300 (srážka) + 250 (hotovost) = 550 Kč. Zbývá 200 Kč jako pohledávka (335), pokud nebude další úhrada. V příkladu jsou uvedené pouze tyto dvě úhrady; v testu může být doplněna ještě třetí operace (např. doplatek 200 Kč).</p>
+
+<h2>Další typické operace v „práci v hodině“</h2>
+<p>V hodině se často objevují také: přebytek na pokladně, VPD záloha na služební cestu nebo drobný nákup, PPD výběr z banky, VBU výběr peněz na pokladnu, vyúčtování zálohy na služební cestu (512/335, 211/335), vyúčtování drobného nákupu (504/335, 211/335), manko na ceninách a předpis manka (569, 668, 335), úhrada schodku a manka srážkou ze mzdy (331/335), došla faktura za stravenky (213/321), prodej stravenek – podíl zaměstnavatele a předpis k úhradě (524 nebo 518, 335), spotřeba známek a kolků (518, 538 / 213). Všechny tyto operace se řídí pravidly z předchozích kapitol: podvojnost, účty 211, 221, 261, 335, 331, 569, 668, 213, 518, 524, 538.</p>
+
+<h2>Shrnutí</h2>
+<p>Příklad „práce v hodině“ kombinuje inventarizaci (schodek), převod mezi pokladnou a bankou (VPD + VBU přes 261) a úhrady (srážka, hotovost). Vždy rozmyslet: které dva účty se mění a na kterou stranu (MD/D) píšeme částku.</p>
+
+</body>
+</html>
