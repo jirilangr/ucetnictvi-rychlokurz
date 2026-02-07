@@ -42,9 +42,10 @@ Interaktivní kurz pro přípravu na opravnou zkoušku z předmětu Základy pod
 
 Bonusové lekce se odemknou po dokončení závěrečného testu.
 
-## Nasazení na veřejnou URL (Vercel / Netlify)
+## Nasazení na veřejnou URL
 
-Pro veřejný odkaz (např. pro sdílení s žáky nebo pro NotebookLM) nasaď projekt na **Vercel** nebo **Netlify**. Návod je v souboru **DEPLOY.md**.
+- **Vercel / Netlify:** Návod je v **DEPLOY.md**. (Kurz už může být nasazený na Vercelu.)
+- **Lovable:** Lovable neumožňuje přímo import existujícího GitHub repa. Návod na publikaci přes workaround (nový projekt v Lovable → propojení s GitHubem → nahrazení obsahu kurzem) je v **LOVABLE-NAVOD.md**.
 
 ## NotebookLM
 
