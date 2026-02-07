@@ -284,7 +284,16 @@ header{background:var(--bg2);border-bottom:2px solid var(--primary);padding:16px
 
 <div class="app">
   <nav class="nav no-print" id="lessonNav"></nav>
-  <main id="mainContent"></main>
+  <main id="mainContent">
+    <!-- Fallback při vypnutém JS nebo chybě – bez JS se aspoň zobrazí úvod -->
+    <div class="welcome" id="mainContentFallback">
+      <span class="big-emoji">🏨📚</span>
+      <h1>Rychlokurz podvojného účetnictví</h1>
+      <p class="subtitle">Pro hotelovou školu – od naprostých základů k jistotě u zkoušky</p>
+      <p style="margin-top:1rem"><a href="ucetnictvi-rychlokurz.html" class="btn btn-primary" style="display:inline-block;padding:12px 24px;text-decoration:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600">Obnovit stránku / Začít</a></p>
+      <p id="mainContentError" style="display:none;margin-top:1rem;padding:12px;background:var(--red-bg);color:var(--red);border-radius:8px;font-size:.9rem"></p>
+    </div>
+  </main>
 </div>
 
 <!-- Tahák k tisku -->
@@ -369,6 +378,11 @@ const APP = {
   completed: new Set(),
   testAnswers: {},
   init() {
+    if (typeof LESSONS === 'undefined' || !LESSONS.length) {
+      var err = document.getElementById('mainContentError');
+      if (err) { err.textContent = 'Chyba: lekce nejsou načteny.'; err.style.display = 'block'; }
+      return;
+    }
     const saved = localStorage.getItem('ucetnictvi_progress');
     if (saved) {
       try {
@@ -377,7 +391,6 @@ const APP = {
         if (typeof d.currentLesson === 'number') this.currentLesson = d.currentLesson;
       } catch(e) {}
     }
-    // Téma
     const theme = localStorage.getItem('ucetnictvi_theme') || 'light';
     if (theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
     this.renderNav();
@@ -426,13 +439,25 @@ const APP = {
     document.getElementById('progressText').textContent = `${done} / ${total} lekcí dokončeno`;
   },
   showLesson(n) {
-    this.currentLesson = n;
-    this.save();
-    this.renderNav();
-    const main = document.getElementById('mainContent');
-    main.innerHTML = LESSONS[n].render(n);
-    if (LESSONS[n].afterRender) LESSONS[n].afterRender(n);
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    try {
+      this.currentLesson = n;
+      this.save();
+      this.renderNav();
+      const main = document.getElementById('mainContent');
+      if (!main) return;
+      if (!LESSONS[n] || typeof LESSONS[n].render !== 'function') {
+        main.innerHTML = '<div class="lesson"><p>Lekce nenalezena.</p></div>';
+        return;
+      }
+      main.innerHTML = LESSONS[n].render(n);
+      if (LESSONS[n].afterRender) LESSONS[n].afterRender(n);
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } catch (e) {
+      const main = document.getElementById('mainContent');
+      if (main) {
+        main.innerHTML = '<div class="lesson"><p><strong>Chyba při načtení:</strong></p><pre style="background:#f5f5f5;padding:12px;overflow:auto;font-size:.85rem">' + String(e.message) + '</pre><p><button class="btn btn-primary" onclick="location.reload()">Obnovit stránku</button></p></div>';
+      }
+    }
   }
 };
 
@@ -2177,7 +2202,20 @@ function showFeedback(id, msg, type) {
 }
 
 // ===================== INIT =====================
-document.addEventListener('DOMContentLoaded', () => APP.init());
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    APP.init();
+    var errEl = document.getElementById('mainContentError');
+    if (errEl) errEl.style.display = 'none';
+  } catch (e) {
+    var errEl = document.getElementById('mainContentError');
+    if (errEl) {
+      errEl.textContent = 'Chyba: ' + (e.message || e);
+      errEl.style.display = 'block';
+    }
+    console.error(e);
+  }
+});
 </script>
 </body>
 </html>
